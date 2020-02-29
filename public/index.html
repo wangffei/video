@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>嘟嘟音乐网站</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="./css/jquery.mCustomScrollbar.css" rel="stylesheet" />
+	<link href="./layui/layui/css/layui.css" rel="stylesheet" />
+	<script src="./js/vue.js"></script>
+	<script type="text/javascript" src="./js/jquery.js"></script>
+	<script type="text/javascript" src="./js/router.js"></script>
+	<script src="./js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="./js/player.js"></script>
+	<script src="./js/musiclist.js"></script>
+	<link rel="stylesheet" type="text/css" href="./css/index.css">
+	<link rel="stylesheet" type="text/css" href="./css/screen.css">
+	<!-- <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+	<script type="text/javascript" src="./js/bootstrap.min.js"></script> -->
+</head>
+<body>
+	<div id="bg">
+		<img src="./img/partedclouds.jpg" alt="" />
+	</div>
+	<div id="singer_bg" style="position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-5;">
+		<img id="singer_bg_img" src="https:\/\/y.gtimg.cn\/music\/photo_new\/T002R300x300M000001fmWDH4I0aBK.jpg?max_age=2592000" style="width:100%;height:100%;" />
+	</div>
+	<div id="app" >
+		<div id="top">
+			<div @click="home()" id="app_top">
+				嘟嘟音乐网站
+			</div>
+			<div id="login">
+				<i class="login_icon" style="width:32px;height:32px;background:url('img/login.png');display:block;cursor:pointer;"></i>
+			</div>
+		</div>
+		<div id="app_top_less">
+			<div @click="go('lrc')" class="app_item">正在播放</div>
+			<div @click="go('music')" class="app_item">播放列表</div>
+			<div @click="go('album')" class="app_item">热门榜单</div>
+			<div @click="go('search')" class="app_item">搜索</div>
+		</div>
+		<div id="panel" class="container">
+			<router-view></router-view>
+		</div>
+		<div id="music_control" class="control">
+			<div style="width:85%;margin:0px auto;height:50px;display:flex;">
+				<div class="control_panel">
+					<div class="control_btn"><img src="./img/control.png" style="width:40px;height:40px;margin:5px;" /></div>
+					<div data="pre" class="control_pre control_item"><i style="width:22px;height:23px;margin:13.5px 14px;background:url('./img/player.png') 0px -29px;overflow:hidden;" ></i></div>
+					<div data="play" class="control_play control_item"><i style="width:22px;height:30px;margin:10px 16px;background:url('./img/player.png');overflow:hidden;" ></i></div>
+					<div data="next" class="control_next control_item"><i style="width:22px;height:23px;margin:13.5px 14px;background:url('./img/player.png') 0px -50px;overflow:hidden;" ></i></div>
+				</div>
+			</div>
+		</div>
+		<audio src="" id="audio" src="" autobuffer style="display:hidden;"></audio>
+	</div>
+	<div id="panel_login_container" style="width:100%;height:100%;background:url('img/bg_empty.png');position:fixed;top:0px;left:0px;display:none;">
+		<div id="panel_login" style="width:500px;height:350px;background:white;border-radius:10px;overflow:hidden;">
+			<div class="login_top" style="width:100%;height:45px;border-bottom:1px solid #c6b8b8;font-size:18px;line-height:45px;padding:0px 15px;">登陆</div>
+			<div class="username" style="width:100%;height:50px;margin-top:30px;">
+				<div style="width:350px;height:40px;margin:0px auto;display:flex;overflow:hidden;">
+					<div style="width:40px;height:40px;background:gray;display:flex;"><img src="img/username.png" style="display:block;margin:4px auto;" /></div><input style="width:310px;height:36px;" type="text" placeholder="请输入账号" />
+				</div>
+			</div>
+			<div class="password" style="width:100%;height:50px;margin-top:30px;">
+				<div style="width:350px;height:40px;margin:0px auto;display:flex;overflow:hidden;">
+					<div style="width:40px;height:40px;background:gray;display:flex;"><img src="img/password.png" style="display:block;margin:4px auto;" /></div><input style="width:310px;height:36px;" type="password" placeholder="请输入密码" />
+				</div>
+			</div>
+			<div style="width:100%;height:50px;margin-top:30px;">
+				<div style="width:350px;height:40px;margin:0px auto;display:flex;overflow:hidden;">
+					<div id="login_btn" class="btn" style="width:150px;height:35px;line-height:35px;font-size:13px;">登陆</div>
+					<div id="regist_btn" class="btn" style="width:150px;height:35px;line-height:35px;font-size:13px;margin-left:50px;">注册</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="./js/home.template.js"></script>
+<script type="text/javascript" src="./js/list.template.js"></script>
+<script type="text/javascript" src="./js/hot.template.js"></script>
+<script type="text/javascript" src="./js/search.template.js"></script>
+<script type="text/javascript" src="./js/album.template.js"></script>
+<script type="text/javascript" src="./js/music.template.js"></script>
+<script type="text/javascript" src="./js/lrc.template.js"></script>
+<script type="text/javascript" src="./js/version.js"></script>
+<script type="text/javascript" src="./layui/layui/layui.all.js"></script>
+<script type="text/javascript">
+	var width = $(document).width()
+	var height = $(document).height()
+	var layer = layui.layer ;
+
+	//读取cookies
+	function getCookie(name)
+	{
+	    var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+	 
+	    if(arr=document.cookie.match(reg))
+	 
+	        return unescape(arr[2]);
+	    else
+	        return null;
+	}
+
+	function del(name, path) { 
+        var name = escape(name);
+        var expires = new Date(0);
+        path = (path == "") ? "" : ";path=" + path;
+        document.cookie = name + "=" + ";expires=" + expires.toUTCString() + path;
+    }
+
+	if(getCookie("username")){
+		$.ajax({
+			url:"/api/userinfo/"+getCookie("username") ,
+			success:function(res){
+				if(res.code == 200){
+					$(".login_icon").before(res.data.name)
+				}
+			}
+		})
+	}
+
+	var player = new Player(document.getElementById("audio") , {}) 
+	// 1.判断是否登陆
+	if(getCookie("username")){
+		$.ajax({
+			url:"/api/list" ,
+			async:false ,
+			success:function(res){
+				if(res.code == 200){
+					for(var i in res.data){
+						player.add(res.data[i])
+					}
+				}
+			}
+		})
+	}else{
+		var storage = window.localStorage["list"]
+		if(storage){
+			storage = JSON.parse(storage)
+			for(var i in storage){
+				player.add(storage[i])
+			}
+		}
+	}
+	var routes = [
+		{path:"/" , component:home} ,
+		{path:"/music" , component:music} ,
+		{path:"/album" , component:album,} ,
+		{path:"/list" , name:"list" , component:list } ,
+		{path:"/hot"  , component:hot } ,
+		{path:"/search"  , component:search } ,
+		{path:"/lrc"  , component:lrc } 
+	]
+
+	var router = new VueRouter({
+	  	routes: routes
+	})
+
+	router.beforeEach(function(to, from, next){
+		if(width < 700){
+			if(to.path == "/"){
+				return 
+			}
+		}
+		next()
+	})
+
+	var app = new Vue({
+		el:"#app" ,
+		data:{
+			width:width ,
+			height:height 
+		},
+		methods:{
+			home:function(){
+				this.$router.push("/")
+			} ,
+			go:function(msg){
+				this.$router.push(msg)
+			}
+		} ,
+		router:router
+	})
+
+	if(width < 700){
+		if(app.$route.path == "/"){
+			app.$router.push("/music")
+		}
+	}
+
+	window.onresize = function(){
+		width = $(document).width()
+		height = $(document).height()
+		app.$data.width = width
+		app.$data.height = height
+
+		if(width < 700){
+			if(app.$route.path == "/"){
+				app.$router.push("/music")
+			}
+		}
+	}
+
+	function init(){
+		$("#login i").click(function(){
+			$("#panel_login").css("margin-top" , (height - 350)/2 + 'px')
+			$("#panel_login").css("margin-left" , (width - 500)/2 + 'px')
+			if(!getCookie("username")){
+				$("#panel_login_container").css("display" , "block")
+			}else{
+				layer.confirm('是否要退出登录', {icon: 3, title:'警告'}, function(index){
+				  del("username") ;
+				  $(".login_icon").parent("div").html($(".login_icon"))
+				  init()
+				  layer.close(index);
+				});
+			}
+		})
+	}
+	init()
+
+	$("#panel_login_container").click(function(){
+		$("#panel_login_container").css("display" , "none")
+	})
+
+	$("#panel_login").click(function(event){
+		event.stopPropagation();
+	})
+
+	$("#login_btn").click(function(){
+		var username = $(".username input").val()
+		var password = $(".password input").val()
+
+		if(username == "" || password == ""){
+			layer.msg("账号或者密码不能为空")
+		}
+
+		$.ajax({
+			url:"/api/login" ,
+			data:{username:username , password:password} ,
+			success:function(res){
+				if(res.code == 500){
+					layer.msg(res.msg)
+				}else{
+					$("#panel_login_container").css("display" , "none")
+					var user = getCookie("username")
+					$(".login_icon").before(res.data[0].name)
+					$.ajax({
+						url:"/api/list" ,
+						async:false ,
+						success:function(res){
+							if(res.code == 200){
+								player.clear() 
+								for(var i in res.data){
+									player.add(res.data[i])
+								}
+								app.$router.push("/")
+							}
+						}
+					})
+				}
+			},
+			fail:function(){
+				layer.msg("请求失败")
+			}
+		})
+	})
+
+	$("#regist_btn").click(function(){
+		$("#panel_login_container").css("display" , "none")
+		window.open("./manager/add_user.html")
+	})
+
+	// 播放暂停，上一曲下一曲
+	$(".control_item").click(function(){
+		if($(this).attr("data") == "play"){
+			$(this).attr("data" , "pause")
+			player.play()
+			$(this).find("i").css("background" , "url('./img/player.png') -29px 0px")
+		}else if($(this).attr("data") == "next"){
+			player.next()
+			$(this).prev().find("i").css("background" , "url('./img/player.png') -29px 0px")
+			$(this).prev().attr("data" , "pause")
+		}else if($(this).attr("data") == "pre"){
+			player.pre()
+			$(this).next().find("i").css("background" , "url('./img/player.png') -29px 0px")
+			$(this).next().attr("data" , "pause")
+		}else if($(this).attr("data") == "pause"){
+			$(this).attr("data" , "play")
+			player.pause()
+			$(this).find("i").css("background" , "url('./img/player.png') 0px 0px")
+		}
+	})
+</script>
+</html>

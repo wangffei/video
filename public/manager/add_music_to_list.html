@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>向歌单中添加歌曲</title>
+  <link rel="stylesheet" href="../layui/layui/css/layui.css" media="all">
+</head>
+<body>
+  <div id="amtl" class="mb-4 mt-5" style="margin-left: 100px;"></div>
+  <script src="../layui/layui/layui.all.js" type="text/javascript" charset="UTF-8"></script>
+  <script>
+
+      function GetQueryString(name)
+      {
+           var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+           var r = window.location.search.substr(1).match(reg);
+           if(r!=null)return  unescape(r[2]); return null;
+      }
+      var id = GetQueryString("album_id")
+      layui.use(['transfer'], function() {
+        let transfer = layui.transfer;
+        let $ = layui.$;
+        let url = "/api/list_music/"+id
+        $.post(url, function(result) {
+          var data_temp = []
+          var indexs = []
+          for(var i in result.data.list_no){
+            data_temp.push(result.data.list_no[i])
+          }
+          for(var i in result.data.list_yes){
+            data_temp.push(result.data.list_yes[i])
+            indexs.push(result.data.list_yes[i].id)
+          }
+          //console.log(indexs)
+          // 穿梭框渲染返回的数据
+          transfer.render({
+            elem: '#amtl'                      // 绑定元素的ID
+            ,title: ['可选歌曲', '已有歌曲']      // 自定义标题
+            ,data: data_temp                // 数据源
+            ,value: indexs 
+            ,id: 'demo'                          // 标识符
+            ,width: 450                        // 宽度
+            ,height: 600                       // 高度
+            ,showSearch:true                   // 开启搜索栏
+            ,text: {
+              none: '暂无音乐',                  // 没有数据时的文案
+              searchNone: '无匹配歌曲'           // 搜索无匹配数据时的文案
+            }
+            ,onchange: function(data, index){
+              //console.log(data[0].value);
+              //console.log(index);
+              var ids = []
+              for(var i in data){
+                ids.push(data[i].value)
+              }
+              // 需要传入数据库的数据album_id ==> indexs     music_id ==> data[0].value
+              if(0 == index) {
+                $.ajax({
+                  url: "/api/add",
+                  data: {album_id: id, music_id: ids},
+                  success: function(res) {
+                    if(res.code == 200) {
+                      //layer.msg("成功")
+                      var getData = transfer.getData('demo');
+                      $.ajax({
+                              url: "/api/update_count",
+                              data: {id: id, count: getData.length},
+                              success: function(res) {
+                                if(res.code == 200) {
+                                  layer.msg("成功")
+                                }else {
+                                  layer.msg(res.msg)
+                                }
+                              },
+                              fail: function() {
+                                layer.msg("请求失败")
+                              }
+                            })
+                            return false;
+                    }else {
+                      layer.msg(res.msg)
+                    }
+                  },
+                  fail: function() {
+                    layer.msg("请求失败")
+                  }
+                })
+                return false;
+              }else {
+                $.ajax({
+                  url: "/api/delete",
+                  data: {album_id: id, music_id: ids},
+                  success: function(res) {
+                    if(res.code == 200) {
+                      //layer.msg("成功")
+                      var getData = transfer.getData('demo');
+                      $.ajax({
+                              url: "/api/update_count",
+                              data: {id: id, count: getData.length},
+                              success: function(res) {
+                                if(res.code == 200) {
+                                  layer.msg("成功")
+                                }else {
+                                  layer.msg(res.msg)
+                                }
+                              },
+                              fail: function() {
+                                layer.msg("请求失败")
+                              }
+                            })
+                            return false;
+                    }else {
+                      layer.msg(res.msg)
+                    }
+                  },
+                  fail: function() {
+                    layer.msg("请求失败")
+                  }
+                })
+                return false;
+              }
+            }
+            ,parseData: function(data) {
+              //console.log(data);
+              return {
+                "value": data.id             // 数据值
+                ,"title": data.song + '----' + data.singer + '----' + data.album
+                ,"disabled": data.disabled      // 是否禁用
+                ,"checked": data.checked        // 是否选中
+              }
+            }
+          });
+        },
+        "json")
+      })
+  </script>
+</body>
+</html>
