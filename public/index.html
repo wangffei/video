@@ -77,8 +77,25 @@
 		#container .content{
 			width:1250px;margin:0px auto;height:1800px;
 		}
-		#container .content .lunbo{
+		#container .content .hot{
+			width:100%;height:400px;display:flex;
+		}
+		#container .content .hot .lunbo{
 			width:900px;margin-top:20px;
+		}
+		#container .content .hot .hot_items{
+			width:300px;margin-left:50px;
+			height:400px;margin-top:20px;
+		}
+		#container .content .hot .hot_title{
+			width:100%;height:38px;display:flex;
+			border-bottom:2px solid red;
+		}
+		#container .content .hot .hot_title .hot_title_txt{
+			flex-grow:1;font-size:20px;line-height:38px;
+		}
+		#container .content .hot .hot_items .hot_panel{
+			width:100%;height:362px;background:gray;
 		}
 	</style>
 </head>
@@ -94,7 +111,7 @@
 					<div class="search">
 						<div class="search_el">
 							<div class="search_panel">
-								<input type="text" name="" style="width:100%;height:100%;font-size:16px;">
+								<input type="text" name="" style="width:100%;height:100%;font-size:16px;" placeholder="请输入关键字">
 							</div>
 							<div class="search_btn">
 								搜索
@@ -114,12 +131,23 @@
 				</div>
 			</div>
 			<div class="content">
-				<div class="lunbo">
-					<el-carousel height="400px">
-				      <el-carousel-item v-for="item in imgs" :key="item">
-				        <img :src="item.url" style="width:900px;height:400px;">
-				      </el-carousel-item>
-				    </el-carousel>
+				<div class="hot">
+					<div class="lunbo">
+						<el-carousel height="400px">
+					      <el-carousel-item v-for="item in imgs" :key="item">
+					        <img :src="item.url" style="width:900px;height:400px;">
+					      </el-carousel-item>
+					    </el-carousel>
+					</div>
+					<div class="hot_items">
+						<div class="hot_title">
+							<i style="display:block;background:url('./img/hot.png');width:32px;height:32px;margin-top:4px;"></i>
+							<div class="hot_title_txt">热门资讯</div>
+						</div>
+						<div class="hot_panel">
+							
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
