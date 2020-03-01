@@ -102,6 +102,20 @@
                     <label class="layui-form-label" style="font-weight: bold; font-size: 18px; width: 120px;">发表文章<br/></label>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">文章标签:</label>
+                    <div class="layui-input-block" style="width: 100px;">
+                      <select name="tag" lay-verify="required" style="float: left;">
+                        <option value=""></option>
+                        <option value="1">动漫</option>
+                        <option value="2">漫画</option>
+                        <option value="3">游戏</option>
+                        <option value="4">美图</option>
+                        <option value="5">杂类</option>
+                        <option value="6">音乐</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">&nbsp;&nbsp;主标题:</label>
                     <div class="layui-input-inline">
                       <input type="text" name="heading" required lay-verify="required" placeholder="请输入主标题" autocomplete="off" class="layui-input">
@@ -115,20 +129,6 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">文章标签:</label>
-                    <div class="layui-input-block">
-                      <select name="tag" lay-verify="required" style="float: left;">
-                        <option value=""></option>
-                        <option value="1">动漫</option>
-                        <option value="2">漫画</option>
-                        <option value="3">游戏</option>
-                        <option value="4">美图</option>
-                        <option value="5">杂类</option>
-                        <option value="6">音乐</option>
-                      </select>
-                    </div>
-                </div>
-                <div class="layui-form-item">
                     <label class="layui-form-label">封面:</label>
                     <div class="layui-input-block">
                         <button type="button" class="layui-btn" id="cover" onclick="upload_cover()" style="float: left;">
@@ -136,7 +136,7 @@
                         </button>
                     </div>
                 </div>
-                <input id="editormd-image-file" type="hidden" name="editormd-image-file"/>
+                <input id="cover_file" type="hidden" name="cover_file"/>
                 <div class="layui-form-item">
                     <label class="layui-form-label"></label>
                 </div>
@@ -161,8 +161,10 @@
                 elem: '#upload'
                 , url: '/api/uploadImage'
                 , accept: 'images'
+                , field: 'editormd-image-file'
                 , done: function(res){
-                  $("#editormd-image-file").val(res.data.file)
+                    //onsole.log(res.url);
+                    $("#cover_file").val(res.url);
                 }
                 ,error: function(){
                   //请求异常回调
