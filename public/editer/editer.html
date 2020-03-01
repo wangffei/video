@@ -5,6 +5,7 @@
         <title>Form get textarea value - Editor.md examples</title>
         <link rel="stylesheet" href="./css/style.css" />
         <link rel="stylesheet" href="./css/editormd.css" />
+        <link rel="stylesheet" href="../layui/css/layui.css" media="all">
         <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
     </head>
     <body>
@@ -20,12 +21,13 @@
 				 <textarea id="blog_html" name="test-editormd-html-code" value="" style="display: none;"></textarea>
                 </div>
                 <div style="width:90%;margin: 10px auto;">
-                    <input type="submit" name="submit" value="提交表单 Submit" style="padding: 5px;" /> 
+                    <input type="button" name="submit" id="submit" value="提交表单 Submit" style="padding: 5px;" /> 
                 </div>               
             </form>
         </div>        
         <script src="./js/jquery.min.js"></script>
-        <script src="./js/editormd.js"></script>   
+        <script src="./js/editormd.js"></script>
+        <script src="../layui/layui.all.js"></script>   
         <script type="text/javascript">
             $(function() {
                 $.get("./test.md", function(md) {
@@ -46,5 +48,101 @@
                 //testEditor.getPreviewedHTML();  // 获取预览窗口里的 HTML，在开启 watch 且没有开启 saveHTMLToTextarea 时使用
             });
         </script>
+
+        <!-- 提交表单弹出层 -->
+        <script type="text/javascript">
+            layui.use(['layer', 'form', 'upload'], function() {
+                var form = layui.form;
+                var layer = layui.layer;
+                var upload = layui.upload;
+                var $ = layui.jquery;
+                form.render();
+                $('#submit').click(function() {
+                    layer.open({
+                        type: 1
+                        ,title: false
+                        ,area: ['36%', '380px']
+                        ,content: $("#popUpdateTest").html()
+                        ,offset: '50px'
+                    });
+                    function test() {
+                        layer.msg("成功");
+                    }
+                });
+
+                //监听提交
+                form.on('submit(formDemo)', function(data){
+                    $.ajax({
+                      url:"/api/upload_news" ,
+                      data:data.field ,
+                      success:function(res){
+                        if(res.code == 200){
+                          layer.msg("成功")
+                          location.reload();
+                        }else{
+                          layer.msg(res.msg)
+                        }
+                      } ,
+                      fail:function(){
+                        layer.msg("请求失败")
+                      }
+                    })
+                    return false;
+                    //layer.msg("提交");
+                });
+            });
+        </script>
+        <!-- 需要弹出的文章信息补充 -->
+        <div class="layui-row" id="popUpdateTest" style="display:none; margin-top: -300px;margin-bottom: 100px;">
+            <style>
+                .layui-form-label {
+                    width: 100px;
+                }
+            </style>
+            <form class="layui-form" lay-filter="formTestFilter" id="complementInforForm">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="font-weight: bold; font-size: 18px; width: 120px;">发表文章<br/></label>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">&nbsp;&nbsp;主标题:</label>
+                    <div class="layui-input-inline">
+                      <input type="text" name="heading" required lay-verify="required" placeholder="请输入主标题" autocomplete="off" class="layui-input">
+                    </div>
+                    <!--<div class="layui-form-mid layui-word-aux">辅助文字</div>-->
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">&nbsp;&nbsp;副标题:</label>
+                    <div class="layui-input-inline">
+                      <input type="text" name="sub_heading" placeholder="请输入副标题" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">文章标签:</label>
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn" id="tag" onclick="test()" style="float: left;">
+                            <i class="layui-icon">&#xe608;</i> 添加标签
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">封面:</label>
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn" id="cover" style="float: left;">
+                          <i class="layui-icon">&#xe67c;</i>上传图片
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="width: 300px;">
+                        <button type="reset" class="layui-btn layui-btn-primary" style="height: 36px;">重置</button>
+                        <button type="button" class="layui-btn layui-btn-primary" style="height: 36px;">保存为草稿</button>
+                        <button type="button" id="updateRole" class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo" style="height: 36px;">发布文章</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </body>
 </html>

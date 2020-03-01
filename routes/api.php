@@ -22,3 +22,4 @@ Route::post('/submitMd', "Api\EditerController@submit");
 Route::get("/info", function (Request $request) {
 	return phpinfo();
 });
+Route::get("/upload_news", "Api\EditerController@news");

@@ -68,5 +68,14 @@
       $result = Array("code" => 200, "msg" => "成功", "data" => "");
       return response(json_encode($result)) -> header("Content-Type", "application/json");
    }
+
+   public function news(Request $request) {
+      $heading = $request -> input('heading');
+      $sub_heading = $request -> input('sub_heading');
+      $md_url = $request -> input('md_url');
+      $html_url = $request -> input('html_url');
+      $cover = $request -> input('cover');
+      $tag = $request -> input('tag');
+   }
    
  }
