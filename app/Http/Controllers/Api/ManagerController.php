@@ -16,11 +16,11 @@ class ManagerController extends Controller{
 	}
 
 	public function upload_news1(Request $request) {
-		$heading = $request -> input('heading');
-		$sub_heading = $request -> input('sub_heading');
-		$md_url = $request -> input('md_url');
-		$html_url = $request -> input('html_url');
-		$cover = $request -> input('cover');
-		$tag = $request -> input('tag');
+		$heading = $request -> input('heading') ;
+		$sub_heading = $request -> input('sub_heading') ;
+		$md_url = $request -> input('md_url') ;
+		$html_url = $request -> input('html_url') ;
+		$cover = $request -> input('cover') ;
+		$tag = $request -> input('tag') ;
    }
 }

@@ -149,25 +149,28 @@
                 </div>
             </form>
         </div>
+        <div id="upload" style="display:none;"></div>
     </body>
     <script>
         var $ = layui.jquery;
-        function upload_cover() {
-            layui.use('upload', function() {
-                var upload = layui.upload;
-                // 执行实例
-                var uploadInst = upload.render({
-                    elem: '#cover'
-                    , url: '/api/uploadImage'
-                    , accept: 'images'
-                    , done: function(res){
-                      $("#editormd-image-file").val(res.data.file)
-                    }
-                    ,error: function(){
-                      //请求异常回调
-                    }
-                });
+
+        layui.use('upload', function() {
+            var upload = layui.upload;
+            // 执行实例
+            var uploadInst = upload.render({
+                elem: '#upload'
+                , url: '/api/uploadImage'
+                , accept: 'images'
+                , done: function(res){
+                  $("#editormd-image-file").val(res.data.file)
+                }
+                ,error: function(){
+                  //请求异常回调
+                }
             });
+        });
+        function upload_cover() {
+            document.getElementById("upload").click() ;
         }
     </script>
 </html>
