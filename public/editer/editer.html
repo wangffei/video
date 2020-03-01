@@ -28,67 +28,23 @@
         <script src="./js/editormd.js"></script>
         <script src="../layui/layui.all.js"></script>   
         <script type="text/javascript">
-            $(function() {
-                $.get("./test.md", function(md) {
-                    var testEditor = editormd("test-editormd", {
-                        width  : "90%",
-                        height : 640,
-                        path   : "./lib/",
-                        appendMarkdown : md,
-                        saveHTMLToTextarea : true ,
-						imageUpload : true,
-						imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-						imageUploadURL : "/api/uploadImage?test=dfdf",
-                    });
-                });
-
-                //testEditor.getMarkdown();       // 获取 Markdown 源码
-                //testEditor.getHTML();           // 获取 Textarea 保存的 HTML 源码
-                //testEditor.getPreviewedHTML();  // 获取预览窗口里的 HTML，在开启 watch 且没有开启 saveHTMLToTextarea 时使用
-            });
-        </script>
-
-        <!-- 提交表单弹出层 -->
-        <script type="text/javascript">
-            layui.use(['layer', 'form', 'upload'], function() {
-                var form = layui.form;
-                var layer = layui.layer;
-                var upload = layui.upload;
-                var $ = layui.jquery;
-                $('#submit').click(function() {
-                    layer.open({
-                        type: 1
-                        ,title: false
-                        ,area: ['36%', '380px']
-                        ,content: $("#popUpdateTest").html()
-                        ,offset: '50px'
-                    });
-                    form.render();
-                    upload.render();
-                });
-
-                //监听提交
-                form.on('submit(formDemo)', function(data){
-                    console.log(data.field);
-                    /*$.ajax({
-                      url:"/api/upload_news" ,
-                      data:data.field ,
-                      success:function(res){
-                        if(res.code == 200){
-                          layer.msg("成功")
-                          location.reload();
-                        }else{
-                          layer.msg(res.msg)
-                        }
-                      } ,
-                      fail:function(){
-                        layer.msg("请求失败")
-                      }
-                    })
-                    return false;*/
-                    layer.msg("提交");
+            var testEditor = undefined 
+            $.get("./test.md", function(md) {
+                testEditor = editormd("test-editormd", {
+                    width  : "90%",
+                    height : 640,
+                    path   : "./lib/",
+                    appendMarkdown : md,
+                    saveHTMLToTextarea : true ,
+					imageUpload : true,
+					imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+					imageUploadURL : "/api/uploadImage?test=dfdf",
                 });
             });
+
+            //testEditor.getMarkdown();       // 获取 Markdown 源码
+            //testEditor.getHTML();           // 获取 Textarea 保存的 HTML 源码
+            //testEditor.getPreviewedHTML();  // 获取预览窗口里的 HTML，在开启 watch 且没有开启 saveHTMLToTextarea 时使用
         </script>
         <!-- 需要弹出的文章信息补充 -->
         <div class="layui-row" id="popUpdateTest" style="display:none; margin-top: -300px;margin-bottom: 100px;">
@@ -136,7 +92,7 @@
                         </button>
                     </div>
                 </div>
-                <input id="cover_file" type="hidden" name="cover_file"/>
+                <input id="cover_page" type="hidden" name="cover_file"/>
                 <div class="layui-form-item">
                     <label class="layui-form-label"></label>
                 </div>
@@ -154,6 +110,7 @@
     <script>
         var $ = layui.jquery;
 
+        var cover_file = undefined
         layui.use('upload', function() {
             var upload = layui.upload;
             // 执行实例
@@ -164,7 +121,9 @@
                 , field: 'editormd-image-file'
                 , done: function(res){
                     //onsole.log(res.url);
-                    $("#cover_file").val(res.url);
+                    if(res.success == 1){
+                        cover_file = res.url;
+                    }
                 }
                 ,error: function(){
                   //请求异常回调
@@ -174,5 +133,47 @@
         function upload_cover() {
             document.getElementById("upload").click() ;
         }
+
+        layui.use(['layer', 'form', 'upload'], function() {
+            var form = layui.form;
+            var layer = layui.layer;
+            var upload = layui.upload;
+            var $ = layui.jquery;
+            $('#submit').click(function() {
+                layer.open({
+                    type: 1
+                    ,title: false
+                    ,area: ['36%', '380px']
+                    ,content: $("#popUpdateTest").html()
+                    ,offset: '50px'
+                });
+                form.render();
+                upload.render();
+            });
+
+            //监听提交
+            form.on('submit(formDemo)', function(data){
+                data.field["md"] = testEditor.getMarkdown();
+                data.field["cover_file"] = cover_file ;
+                console.log(data);
+                /*$.ajax({
+                  url:"/api/upload_news" ,
+                  data:data.field ,
+                  success:function(res){
+                    if(res.code == 200){
+                      layer.msg("成功")
+                      location.reload();
+                    }else{
+                      layer.msg(res.msg)
+                    }
+                  } ,
+                  fail:function(){
+                    layer.msg("请求失败")
+                  }
+                })
+                return false;*/
+                layer.msg("提交");
+            });
+        });
     </script>
 </html>
