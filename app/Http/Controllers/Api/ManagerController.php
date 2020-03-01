@@ -20,7 +20,7 @@ class ManagerController extends Controller{
 		$sub_heading = $request -> input('sub_heading') ;
 		$md_url = $request -> input('md_url') ;
 		$html_url = $request -> input('html_url') ;
-		$cover = $request -> input('cover') ;
+		$cover = $request -> input('cover_file') ;
 		$tag = $request -> input('tag') ;
    }
 }
