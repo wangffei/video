@@ -46,7 +46,6 @@
 
    public function submit(Request $request){
       $md = $request -> input("test-editormd-markdown-doc") ;
-      $html = $request -> input("test-editormd-html-code") ;
 
       if(!is_null($md)){
          $newfilename = time().".md" ;
