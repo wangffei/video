@@ -58,7 +58,10 @@
       if(!is_null($md)){
          $newfilename = time().".html" ;
          $f = fopen("./uploads/html/".$newfilename , "w") ;
-         fwrite($f , $html) ;
+         fwrite($f , "<head><link rel='stylesheet' href='/editer/css/style.css' /><link rel='stylesheet' href='/editer/css/editormd.css' /><script src='/editer/js/jquery.min.js'></script><script src='/editer/js/editormd.js'></script><script src='/editer/lib/marked.min.js'></script><script src='/editer/lib/prettify.min.js'></script><script src='/editer/lib/raphael.min.js'></script><script src='/editer/lib/underscore.min.js'></script><script src='/editer/lib/sequence-diagram.min.js'></script></script><script src='/editer/lib/flowchart.min.js'></script><script src='/editer/lib/jquery.flowchart.min.js'></script></script><script src='/editer/lib/jquery.flowchart.min.js'></script></head><div id='code'><textarea>".$md."</textarea></div><script>editormd.markdownToHTML('code', {
+             htmlDecode: 'style,script,iframe', emoji: true,
+             taskList:true,
+             tex: true,  flowChart:true, sequenceDiagram:true,});</script>") ;
          fclose($f) ;
       }
       
