@@ -23,4 +23,4 @@ Route::get("/info", function (Request $request) {
 	return phpinfo();
 });
 Route::get("/get_tags", "Api\ManagerController@get_tags1");
-Route::get("/upload_news", "Api\ManagerController@upload_news1");
+Route::post("/upload_news", "Api\ManagerController@upload_news1");
