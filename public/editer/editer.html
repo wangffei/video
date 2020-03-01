@@ -55,7 +55,6 @@
                 var layer = layui.layer;
                 var upload = layui.upload;
                 var $ = layui.jquery;
-                form.render();
                 $('#submit').click(function() {
                     layer.open({
                         type: 1
@@ -64,11 +63,14 @@
                         ,content: $("#popUpdateTest").html()
                         ,offset: '50px'
                     });
+                    form.render();
+                    upload.render();
                 });
 
                 //监听提交
                 form.on('submit(formDemo)', function(data){
-                    $.ajax({
+                    console.log(data.field);
+                    /*$.ajax({
                       url:"/api/upload_news" ,
                       data:data.field ,
                       success:function(res){
@@ -83,8 +85,8 @@
                         layer.msg("请求失败")
                       }
                     })
-                    return false;
-                    //layer.msg("提交");
+                    return false;*/
+                    layer.msg("提交");
                 });
             });
         </script>
@@ -115,19 +117,26 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">文章标签:</label>
                     <div class="layui-input-block">
-                        <button type="button" class="layui-btn" id="tag" onclick="test()" style="float: left;">
-                            <i class="layui-icon">&#xe608;</i> 添加标签
-                        </button>
+                      <select name="tag" lay-verify="required" style="float: left;">
+                        <option value=""></option>
+                        <option value="1">动漫</option>
+                        <option value="2">漫画</option>
+                        <option value="3">游戏</option>
+                        <option value="4">美图</option>
+                        <option value="5">杂类</option>
+                        <option value="6">音乐</option>
+                      </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">封面:</label>
                     <div class="layui-input-block">
-                        <button type="button" class="layui-btn" id="cover" style="float: left;">
+                        <button type="button" class="layui-btn" id="cover" onclick="upload_cover()" style="float: left;">
                           <i class="layui-icon">&#xe67c;</i>上传图片
                         </button>
                     </div>
                 </div>
+                <input id="editormd-image-file" type="hidden" name="editormd-image-file"/>
                 <div class="layui-form-item">
                     <label class="layui-form-label"></label>
                 </div>
@@ -142,8 +151,23 @@
         </div>
     </body>
     <script>
-        function test(){
-            alert()
+        var $ = layui.jquery;
+        function upload_cover() {
+            layui.use('upload', function() {
+                var upload = layui.upload;
+                // 执行实例
+                var uploadInst = upload.render({
+                    elem: '#cover'
+                    , url: '/api/uploadImage'
+                    , accept: 'images'
+                    , done: function(res){
+                      $("#editormd-image-file").val(res.data.file)
+                    }
+                    ,error: function(){
+                      //请求异常回调
+                    }
+                });
+            });
         }
     </script>
 </html>

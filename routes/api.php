@@ -22,4 +22,5 @@ Route::post('/submitMd', "Api\EditerController@submit");
 Route::get("/info", function (Request $request) {
 	return phpinfo();
 });
-Route::get("/upload_news", "Api\EditerController@news");
+Route::get("/get_tags", "Api\ManagerController@get_tags1");
+Route::get("/upload_news", "Api\ManagerController@upload_news1");
