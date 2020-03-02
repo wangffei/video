@@ -19,12 +19,9 @@
  	}
 
  	public function test(){
- 		ignore_user_abort(true); // 让http响应结束脚本继续运行
- 		set_time_limit(0);   // 取消脚本的超时时间
  		echo "laile" ;
  		$list = DB::select("select * from config where flag = 1 limit 1") ;
- 		MovieUtil::movie2flv("" , "" , $list[0]) ;
- 		sleep(5000) ;
+ 		MovieUtil::movie2flv("C:\\Users\\Administrator\\Desktop\\1.mp4" , "1.flv" , $list[0]) ;
  		echo "haha" ;
  	}
 
