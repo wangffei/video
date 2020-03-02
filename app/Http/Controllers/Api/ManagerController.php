@@ -16,6 +16,7 @@ class ManagerController extends Controller{
 		return response(json_encode($result)) -> header("Content-Type", "application/json");
 	}
 
+	// 资讯发布
 	public function upload_news1(Request $request) {
 		$heading = $request -> input('heading') ;
 		$sub_heading = $request -> input('sub_heading') ;
@@ -89,5 +90,17 @@ class ManagerController extends Controller{
 			$result = Array("code" => 500, "msg" => "失败", "count" => 1, "data" =>"");
 			return response(json_encode($result)) -> header("Content-Type", "application/json");
 		}
+    }
+
+    // 获取轮播图信息
+    public function cartoons1() {
+    	$cartoon = DB::select("select * from cartoons");
+		$result = Array("code" => 200, "msg" => "成功", "count" => 1, "data" => $cartoon);
+		return response(json_encode($result)) -> header("Content-Type", "application/json");
+    }
+
+    // 添加轮播图信息
+    public function add_cartoon1(Request $request) {
+    	//$title = $request -> input('');
     }
 }
