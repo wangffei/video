@@ -118,7 +118,7 @@
 			width:100%;height:160px;overflow:hidden;padding:10px 0px;border-bottom:1px solid #e9e9e9 ;display:flex;
 		}
 		#container .content .content_news .left .news_item .cover{
-			width:250px;height:160px;overflow:hidden;
+			width:250px;height:160px;overflow:hidden;cursor:pointer;
 		}
 		#container .content .content_news .left .news_item .cover img{
 			width:250px;height:160px;
@@ -127,7 +127,10 @@
 			display:flex;flex-direction:column;width:635px;margin-left:15px;
 		}
 		#container .content .content_news .left .news_item .news_item_right .head{
-			width:100%;height:32px;font-size:20px;display:flex;overflow:hidden;
+			width:100%;height:32px;font-size:20px;display:flex;overflow:hidden;cursor:pointer;
+		}
+		#container .content .content_news .left .news_item .news_item_right .head:hover{
+			color:blue;
 		}
 		#container .content .content_news .left .news_item .news_item_right .head .new_item_title_main{
 			line-height:32px;
@@ -158,6 +161,9 @@
 		}
 		#container .content .content_news .left .news_item .news_item_right .footer .count{
 			width:250px;height:20px;margin-top:10px;line-height:20px;display:flex;
+		}
+		#container .content .content_news .left .page{
+			width:400px;margin:30px auto;
 		}
 	</style>
 </head>
@@ -218,11 +224,11 @@
 							<div class="news_title_txt">新闻资讯</div>
 						</div>
 						<div v-for="item in news" class="news_item">
-							<div class="cover">
+							<div @click="go(item.url)" class="cover">
 								<img :src="item.cover" />
 							</div>
 							<div class="news_item_right">
-								<div class="head">
+								<div @click="go(item.url)" class="head">
 									<i style="width:32px;height:32px;display:block;background:url('./img/title.png');"></i>
 									<div class="new_item_title_main">{{item.heading}}</div>
 								</div>
@@ -251,7 +257,18 @@
 								</div>
 							</div>
 						</div>
+						<div class="page">
+							<el-pagination background layout="prev, pager, next" :total="total" @current-change="page"></el-pagination>
+						</div>
 					</div>
+				</div>
+			</div>
+			<div style="width:100%;height:160px;background:#8fbbe7;text-align:center;overflow:hidden;">
+				<div style="color:#615f5f;font-size:12px;margin-top:50px;">
+					动漫信息网，为您提供优质的动漫资讯，为您提供快速流畅的动漫播放
+				</div>
+				<div style="color:#615f5f;font-size:12px;margin-top:50px;">
+					Copyright © 2005-2015 动漫信息网
 				</div>
 			</div>
 		</div>
@@ -268,7 +285,9 @@
     		{url:"./img/bg1.png"} ,
     		{url:"./img/bg2.png"}
     	] ,
-    	news:[]
+    	news:[] ,
+    	total:100 ,
+    	current:1
       } ,
       created:function(){
       	var self = this 
@@ -276,11 +295,39 @@
       		url:"/api/news/1/10" ,
       		success:function(res){
       			if(res.code == 200){
-      				self.news = res.data
-      				console.log(self.news)
+      				self.news = res.data.list
+      				self.total = res.data.count 
       			}
       		}
       	})
+      } ,
+      methods:{
+      	go:function(url){
+      		window.open("detail.html?url="+url)
+      	} ,
+      	page:function(val){
+      		var self = this
+      		const loading = this.$loading({
+	          lock: true,
+	          text: 'Loading',
+	          spinner: 'el-icon-loading',
+	          background: 'white'
+	        });
+      		$.ajax({
+      		url:"/api/news/"+val+"/10" ,
+      		success:function(res){
+      			if(res.code == 200){
+      				self.current = val 
+      				self.news = res.data.list
+      				self.total = res.data.count 
+      			}
+      			loading.close();
+      		},
+      		fail:function(){
+      			loading.close();
+      		}
+      	})
+      	}
       }
     })
 </script>
