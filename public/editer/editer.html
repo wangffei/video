@@ -59,7 +59,7 @@
             </style>
             <form class="layui-form" lay-filter="formTestFilter" id="complementInforForm">
                 <div class="layui-form-item">
-                    <label class="layui-form-label" style="font-weight: bold; font-size: 18px; width: 120px;">发表文章<br/></label>
+                    <label class="layui-form-label" style="font-weight: bold; font-size: 18px; width: 120px;"><br/>发表文章<br/></label>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">文章标签:</label>
@@ -158,25 +158,27 @@
             //监听提交
             form.on('submit(formDemo)', function(data){
                 data.field["md"] = testEditor.getMarkdown();
+                //data.field["html"] = testEditor.getHTML();
                 data.field["cover_file"] = cover_file ;
-                console.log(data);
-                /*$.ajax({
-                  url:"/api/upload_news" ,
-                  data:data.field ,
-                  success:function(res){
-                    if(res.code == 200){
-                      layer.msg("成功")
-                      location.reload();
-                    }else{
-                      layer.msg(res.msg)
+                //console.log(data.field);
+                $.ajax({
+                    type: "POST",
+                    url:"/api/upload_news",
+                    data:data.field ,
+                    success:function(res){
+                        if(res.code == 200){
+                          layer.msg("成功")
+                          location.reload();
+                        }else{
+                          layer.msg(res.msg)
+                        }
+                    } ,
+                    fail:function(){
+                        layer.msg("请求失败")
                     }
-                  } ,
-                  fail:function(){
-                    layer.msg("请求失败")
-                  }
                 })
-                return false;*/
-                layer.msg("提交");
+                return false;
+                //layer.msg("提交");
             });
         });
     </script>
