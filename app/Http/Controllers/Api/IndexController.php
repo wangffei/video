@@ -24,7 +24,7 @@
  		echo "laile" ;
  		$list = DB::select("select * from config where flag = 1 limit 1") ;
  		MovieUtil::movie2flv("" , "" , $list[0]) ;
- 		//sleep(5000) ;
+ 		sleep(5000) ;
  		echo "haha" ;
  	}
 

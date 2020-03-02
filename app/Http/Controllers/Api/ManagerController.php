@@ -12,7 +12,7 @@ class ManagerController extends Controller{
 	// 获取所有标签信息
 	public function get_tags1() {
 		$tags = DB::select("select * from tags");
-		$result = Array("code" => 0, "msg" => "成功", "count" => 1, "data" => $tags);
+		$result = Array("code" => 200, "msg" => "成功", "count" => 1, "data" => $tags);
 		return response(json_encode($result)) -> header("Content-Type", "application/json");
 	}
 
@@ -101,6 +101,71 @@ class ManagerController extends Controller{
 
     // 添加轮播图信息
     public function add_cartoon1(Request $request) {
-    	//$title = $request -> input('');
+    	$title = $request -> input('title');
+    	$link = $request -> input('link');
+    	$flag = $request -> input('flag');
+    	$cover_file = $request -> input('cover_file');
+
+    	if($title != null && $link != null && $flag != null && $cover_file != null) {
+    		$bool = DB::insert("insert into cartoons(img_url, link, flag, title) values(?,?,?,?)", [$cover_file, $link, $flag, $title]);
+    		$result = Array("code" => 200, "msg" => "成功", "count" => 1, "data" =>"");
+			return response(json_encode($result)) -> header("Content-Type", "application/json");
+    	}else {
+    		$result = Array("code" => 500, "msg" => "失败", "count" => 1, "data" =>"");
+			return response(json_encode($result)) -> header("Content-Type", "application/json");
+    	}
+    }
+
+    // 删除轮播图信息
+    public function delete_cartoon1(Request $request) {
+    	$id = $request -> input('id');
+
+    	if($id != null) {
+    		$bool = DB::delete("delete from cartoons where id=?", [$id]);
+    		$result = Array("code" => 200, "msg" => "成功", "count" => 1, "data" =>"");
+			return response(json_encode($result)) -> header("Content-Type", "application/json");
+    	}else {
+    		$result = Array("code" => 500, "msg" => "失败", "count" => 1, "data" =>"");
+			return response(json_encode($result)) -> header("Content-Type", "application/json");
+    	}
+    }
+
+    // 批量删除轮播图信息
+    public function delete_cartoons1(Request $request) {
+    	$ids = $request -> input('ids');
+
+		if($ids != null) {
+			foreach ($ids as $value) {
+				$bool = DB::delete("delete from cartoons where id=?", [$value]);
+			}
+			$result = Array("code" => 200, "msg" => "删除成功！", "count" => 1, "data" => "");
+			return response(json_encode($result)) -> header("Content-Type", "application/json");
+		}else {
+			$result = Array("code" => 500, "msg" => "删除失败！", "count" => 1, "data" => "");
+			return response(json_encode($result)) -> header("Content-Type", "application/json");
+		}
+    }
+
+    // 修改轮播图信息
+    public function update_cartoon1(Request $request) {
+    	$id = $request -> input('id');
+    	$title = $request -> input('title');
+    	$link = $request -> input('link');
+    	$flag = $request -> input('flag');
+    	$cover_file1 = $request -> input('cover_file1');
+
+    	if($id != null) {
+    		if($cover_file1 != null) {
+    			$bool1 = DB::update("update cartoons set img_url=? where id=?", [$cover_file1, $id]);
+    		}
+    		$bool2 = DB::update("update cartoons set title=? where id=?", [$title, $id]);
+    		$bool3 = DB::update("update cartoons set link=? where id=?", [$link, $id]);
+    		$bool4 = DB::update("update cartoons set flag=? where id=?", [$flag, $id]);
+    		$result = Array("code" => 200, "msg" => "删除成功！", "count" => 1, "data" => "");
+			return response(json_encode($result)) -> header("Content-Type", "application/json");
+    	}else {
+    		$result = Array("code" => 500, "msg" => "删除失败！", "count" => 1, "data" => "");
+			return response(json_encode($result)) -> header("Content-Type", "application/json");
+    	}
     }
 }
