@@ -75,17 +75,17 @@
 			background:#8fbbe7;color:blue;
 		}
 		#container .content{
-			width:1250px;margin:0px auto;height:1800px;
+			width:1250px;margin:0px auto;height:auto;overflow:hidden;margin-top:20px;
 		}
 		#container .content .hot{
 			width:100%;height:400px;display:flex;
 		}
 		#container .content .hot .lunbo{
-			width:900px;margin-top:20px;
+			width:900px;overflow:hidden;
 		}
 		#container .content .hot .hot_items{
 			width:300px;margin-left:50px;
-			height:400px;margin-top:20px;
+			height:400px;
 		}
 		#container .content .hot .hot_title{
 			width:100%;height:38px;display:flex;
@@ -96,6 +96,68 @@
 		}
 		#container .content .hot .hot_items .hot_panel{
 			width:100%;height:362px;background:gray;
+		}
+		#container .content .content_news{
+			width:100%;margin-top:30px;display:flex;
+		}
+		#container .content .content_news .left{
+			width:900px;
+		}
+
+		/* 新闻资讯标题css开始 */
+		#container .content .content_news .left .theme{
+			width:100%;height:40px;border-bottom:2px solid red;display:flex;
+		}
+		#container .content .content_news .left .theme .news_title_txt{
+			flex-grow:1;font-size:20px;line-height:38px;
+		}
+		/* 新闻资讯标题css结束 */
+
+		/* 新闻卡片布局开始 */
+		#container .content .content_news .left .news_item{
+			width:100%;height:160px;overflow:hidden;padding:10px 0px;border-bottom:1px solid #e9e9e9 ;display:flex;
+		}
+		#container .content .content_news .left .news_item .cover{
+			width:250px;height:160px;overflow:hidden;
+		}
+		#container .content .content_news .left .news_item .cover img{
+			width:250px;height:160px;
+		}
+		#container .content .content_news .left .news_item .news_item_right{
+			display:flex;flex-direction:column;width:635px;margin-left:15px;
+		}
+		#container .content .content_news .left .news_item .news_item_right .head{
+			width:100%;height:32px;font-size:20px;display:flex;overflow:hidden;
+		}
+		#container .content .content_news .left .news_item .news_item_right .head .new_item_title_main{
+			line-height:32px;
+		}
+		#container .content .content_news .left .news_item .news_item_right .info_1{
+			width:100%;height:30px;margin-top:5px;color:red;display:flex;
+		}
+		#container .content .content_news .left .news_item .news_item_right .info_1 .type{
+			display:flex;line-height:32px;font-size:12px;
+		}
+		#container .content .content_news .left .news_item .news_item_right .info_1 .type .type_item{
+			width:50px;height:20px;background:#dddddd;line-height:20px;text-align:center;margin:5px;border-radius:14px;
+		}
+		#container .content .content_news .left .news_item .news_item_right .info_1 .type .type_item:hover{
+			background:red;color:white;
+		}
+		#container .content .content_news .left .news_item .news_item_right .info_1 .source{
+			display:flex;line-height:32px;font-size:12px;margin-left:30px;
+		}
+		#container .content .content_news .left .news_item .news_item_right .info_2{
+			width:100%;height:40px;line-height:20px;font-size:12px;margin:8px 0px;color:#8f8d8d;overflow:hidden;
+		}
+		#container .content .content_news .left .news_item .news_item_right .footer{
+			width:100%;height:20px;display:flex;margin-top:12px;font-size:12px;color:#958e8e;
+		}
+		#container .content .content_news .left .news_item .news_item_right .footer .time{
+			width:250px;height:20px;margin-top:10px;line-height:20px;display:flex;
+		}
+		#container .content .content_news .left .news_item .news_item_right .footer .count{
+			width:250px;height:20px;margin-top:10px;line-height:20px;display:flex;
 		}
 	</style>
 </head>
@@ -149,6 +211,48 @@
 						</div>
 					</div>
 				</div>
+				<div class="content_news">
+					<div class="left">
+						<div class="theme">
+							<i style="width:32px;height:32px;display:block;background:url('./img/news.png');margin-top:4px;"></i>
+							<div class="news_title_txt">新闻资讯</div>
+						</div>
+						<div v-for="item in news" class="news_item">
+							<div class="cover">
+								<img :src="item.cover" />
+							</div>
+							<div class="news_item_right">
+								<div class="head">
+									<i style="width:32px;height:32px;display:block;background:url('./img/title.png');"></i>
+									<div class="new_item_title_main">{{item.heading}}</div>
+								</div>
+								<div class="info_1">
+									<div class="type">
+										<i style="width:16px;height:16px;display:block;background:url('./img/type.png');margin:8px 3px;"></i>
+										<div class="type_item">{{item.tag_name}}</div>
+									</div>
+									<div class="source">
+										<i style="width:16px;height:16px;display:block;background:url('./img/author.png');margin:8px 3px;"></i>
+										<div class="type_item">{{item.author}}</div>
+									</div>
+								</div>
+								<div class="info_2">
+									{{item.sub_heading}}
+								</div>
+								<div class="footer">
+									<div class="time">
+										<i style="width:16px;height:16px;display:block;background:url('./img/time.png');margin:2px 3px;"></i>
+										<div class="type_item">{{item.release_time}}</div>
+									</div>
+									<div class="count">
+										<i style="width:16px;height:16px;display:block;background:url('./img/view.png');margin:2px 3px;"></i>
+										<div class="type_item">{{item.page_view}}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -159,13 +263,24 @@
 	
 	new Vue({
       el: '#app',
-      data: function() {
-        return { 
-        	imgs: [
-        		{url:"./img/bg1.png"} ,
-        		{url:"./img/bg2.png"}
-        	] 
-        }
+      data: {
+    	imgs: [
+    		{url:"./img/bg1.png"} ,
+    		{url:"./img/bg2.png"}
+    	] ,
+    	news:[]
+      } ,
+      created:function(){
+      	var self = this 
+      	$.ajax({
+      		url:"/api/news/1/10" ,
+      		success:function(res){
+      			if(res.code == 200){
+      				self.news = res.data
+      				console.log(self.news)
+      			}
+      		}
+      	})
       }
     })
 </script>
