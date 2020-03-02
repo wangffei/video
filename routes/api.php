@@ -26,3 +26,6 @@ Route::get("/get_tags", "Api\ManagerController@get_tags1");
 Route::post("/upload_news", "Api\ManagerController@upload_news1");
 
 Route::get("/news/{page}/{limit}", "Api\IndexController@news");
+
+Route::get("/cartoons", "Api\ManagerController@cartoons1");
+Route::post("/add_cartoon", "Api\ManagerController@add_cartoon1");
