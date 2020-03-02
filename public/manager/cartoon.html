@@ -67,6 +67,61 @@
         </form>
     </div>
     <div id="upload" style="display:none;"></div>
+
+    <!-- 弹出层：修改记录 -->
+    <div class="layui-row" id="popUpdateTest1" style="display:none; margin-top: -300px;margin-bottom: 100px;">
+      <div class="layui-col-md10">
+          <form class="layui-form" lay-filter="formTestFilter1" id="addAndUpdateEmployeeForm">
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">ID：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="id" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="title" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">跳转链接：</label>
+              <div class="layui-input-inline">
+                <input type="text" name="link" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">类型：</label>
+              <div class="layui-input-block">
+                <input type="radio" name="flag" value=0 title="本地链接" class="layui-input">
+                <input type="radio" name="flag" value=1 title="网络链接" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">封面:</label>
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" id="cover1" onclick="upload_cover1()" style="float: left;">
+                      <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+            </div>
+            <input id="cover_page1" type="hidden" name="cover_file1"/>
+            <div class="layui-form-item">
+                <label class="layui-form-label"></label>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" id="updateRole1" class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo1">提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+          </form>
+      </div>
+    </div>
+    <div id="upload1" style="display:none;"></div>
    
     <table id="cartoon" lay-filter="test"></table>
 
@@ -108,6 +163,29 @@
     });
     function upload_cover() {
         document.getElementById("upload").click() ;
+    }
+    var cover_file1 = null;
+    layui.use('upload', function() {
+        var upload = layui.upload;
+        // 执行实例
+        var uploadInst = upload.render({
+            elem: '#upload1'
+            , url: '/api/uploadImage'
+            , accept: 'images'
+            , field: 'editormd-image-file'
+            , done: function(res){
+                //onsole.log(res.url);
+                if(res.success == 1){
+                    cover_file1 = res.url;
+                }
+            }
+            ,error: function(){
+              //请求异常回调
+            }
+        });
+    });
+    function upload_cover1() {
+        document.getElementById("upload1").click() ;
     }
 
     //var width = $(document).width()
@@ -160,7 +238,7 @@
             //监听提交
             form.on('submit(formDemo)', function(data){
                 data.field["cover_file"] = cover_file ;
-                //console.log(data.field);
+                console.log(data.field);
                 $.ajax({
                     type: "POST",
                     url:"/api/add_cartoon",
@@ -185,9 +263,9 @@
             if(data.length === 0) {
               layer.msg("请选择一行");
             }else if(data.length === 1) {
-              /*layer.confirm('删除此歌单', function(index) {
+              layer.confirm('删除记录', function(index) {
                 $.ajax({
-                  url:"/api/delete_list" ,
+                  url:"/api/delete_cartoon" ,
                   data:{id:data[0].id},
                   success:function(res){
                     if(res.code == 200){
@@ -201,16 +279,16 @@
                     layer.msg("请求失败")
                   }
                 })
-              })*/
+              })
             }else {
               // 批量删除
-              /*var ids = []
+              var ids = []
               for(var i in data){
                 ids.push(data[i].id)
               }
-              layer.confirm('删除所选歌单', function(index) {
+              layer.confirm('删除所选记录', function(index) {
                 $.ajax({
-                  url: "/api/delete_lists",
+                  url: "/api/delete_cartoons",
                   data: {ids: ids},
                   success: function(res) {
                     if(res.code == 200) {
@@ -224,25 +302,25 @@
                     layer.msg("请求失败")
                   }
                 })
-              })*/
+              })
             }
             //location.reload();
           break;
           case 'update':
-            layer.alert("直接点击单元格进行对歌单名和图片地址的修改！<br>其他部分不能修改！<br>新增歌单请选择左侧'+'按钮！");
+            layer.alert("点击表格中的‘修改记录’按钮修改表格信息！");
           break;
         };
       });
 
       //监听行工具事件
-      /*table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+      table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
         var data = obj.data //获得当前行数据
         ,layEvent = obj.event; //获得 lay-event 对应的值
         if(layEvent === 'del') {
-          console.log(data.id);
+          //console.log(data.id);
           layer.confirm('删除记录', function(index) {
                 $.ajax({
-                        url:"/api/delete_img" ,
+                        url:"/api/delete_cartoon" ,
                         data:{id:data.id},
                         success:function(res){
                           if(res.code == 200){
@@ -259,9 +337,51 @@
                 layer.close(index);
               })
         } else if(layEvent === 'update') {
-          layer.msg("修改");
+          //layer.msg("修改");
+          layer.open({
+              type: 1
+              ,title: "修改记录"
+              ,area: ['34%', '460px']
+              ,content: $("#popUpdateTest1").html()
+              ,offset: '50px'
+          });
+          form.render();
+          setFormValue(data);
         }
-      });*/
+      });
+
+      // 动态向表单赋值
+      function setFormValue(data) {
+        form.val("formTestFilter1", {
+          "id": data.id
+          , "title": data.title
+          , "link": data.link
+          , "flag": data.flag
+        });
+        form.render(null, 'formTestFilter1')
+      }
+      
+      //监听提交
+      form.on('submit(formDemo1)', function(data){
+        data.field["cover_file1"] = cover_file1 ;
+        console.log(data.field);
+        $.ajax({
+          url:"/api/update_cartoon" ,
+          data:data.field ,
+          success:function(res){
+            if(res.code == 200){
+              layer.msg("成功")
+              location.reload();
+            }else{
+              layer.msg(res.msg)
+            }
+          } ,
+          fail:function(){
+            layer.msg("请求失败")
+          }
+        })
+        return false;
+      });
     });
     </script>
   </body>
