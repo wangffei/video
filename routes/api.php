@@ -29,3 +29,5 @@ Route::get("/news/{page}/{limit}", "Api\IndexController@news");
 
 Route::get("/cartoons", "Api\ManagerController@cartoons1");
 Route::post("/add_cartoon", "Api\ManagerController@add_cartoon1");
+
+Route::get("/test", "Api\IndexController@test");

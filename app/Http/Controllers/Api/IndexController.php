@@ -2,10 +2,11 @@
  
  namespace App\Http\Controllers\Api  ;
 
- #require_once(dirname(__FILE__) . "/../../../Util/editormd.uploader.class.php") ;
+ require_once(dirname(__FILE__) . "/../../../Util/MovieUtil.php") ;
  use App\Http\Controllers\Controller;
  use Illuminate\Support\Facades\DB;
  use Illuminate\Http\Request;
+ use App\Util\MovieUtil ;
 
  class IndexController extends Controller{
 
@@ -15,6 +16,16 @@
  		$count = DB::select("select count(*) as count from news")[0] -> count ;
  		$result = Array("code" => 200 , "msg" => "成功" , "data" => Array("list" => $list , "count"=> $count , "limit" => $limit ));
         return response(json_encode($result)) -> header("Content-Type", "application/json");
+ 	}
+
+ 	public function test(){
+ 		ignore_user_abort(true); // 让http响应结束脚本继续运行
+ 		set_time_limit(0);   // 取消脚本的超时时间
+ 		echo "laile" ;
+ 		$list = DB::select("select * from config where flag = 1 limit 1") ;
+ 		MovieUtil::movie2flv("" , "" , $list[0]) ;
+ 		//sleep(5000) ;
+ 		echo "haha" ;
  	}
 
  }
