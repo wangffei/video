@@ -18,6 +18,21 @@
         return response(json_encode($result)) -> header("Content-Type", "application/json");
  	}
 
+ 	// 将资讯详情页的预览量+1
+ 	public function addNewsView(Request $request){
+ 		$url = $request -> input("url") ;
+ 		$list = DB::update("update news set page_view = page_view + 1 where html_url = '{$url}'") ;
+ 		$result = Array("code" => 200 , "msg" => "成功" , "data" => "");
+        return response(json_encode($result)) -> header("Content-Type", "application/json");
+ 	}
+
+ 	// 查出热门资讯
+ 	public function hot(){
+ 		$list = DB::select("select news.heading , news.sub_heading , news.release_time , news.html_url as url , news.page_view , news.cover , news.author , tags.tag_name  from news , tags where tags.id = news.tag_id order by page_view desc limit 10") ;
+ 		$result = Array("code" => 200 , "msg" => "成功" , "data" => $list);
+        return response(json_encode($result)) -> header("Content-Type", "application/json");
+ 	}
+
  	public function test(){
  		echo "laile" ;
  		$list = DB::select("select * from config where flag = 1 limit 1") ;

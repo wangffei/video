@@ -27,5 +27,9 @@
   }
   var url = GetQueryString("url") ;
   $("#container").load(url)
+
+  $.ajax({
+  	url:"/api/addNewsView?url="+url 
+  })
 </script>
 </html>
