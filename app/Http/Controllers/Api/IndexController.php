@@ -36,7 +36,8 @@
  	public function test(){
  		echo "laile" ;
  		$list = DB::select("select * from config where flag = 1 limit 1") ;
- 		MovieUtil::movie2flv("C:\\Users\\Administrator\\Desktop\\1.mp4" , "1.flv" , $list[0]) ;
+ 		//MovieUtil::movie2flv("C:\\Users\\Administrator\\Desktop\\1.mp4" , "1.flv" , $list[0]) ;
+ 		MovieUtil::getDuration("C:\\Users\\Administrator\\Desktop\\1.mp4") ;
  		echo "haha" ;
  	}
 
