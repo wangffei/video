@@ -12,6 +12,8 @@
 	<link rel="stylesheet" href="./css/elementui.min.css">
 	<!-- 引入组件库 -->
 	<script src="./js/elementui.min.js"></script>
+	<script src="./layui/lay/modules/layer.js"></script>
+	<link rel="stylesheet" href="./layui/css/modules/layer/default/layer.css">
 	<style type="text/css">
 		*{margin:0px;padding:0px;}
 		html,body{width:100%;height:100%;}
@@ -177,7 +179,12 @@
 	<div id="app">
 		<div id="theme_top">
 			<div class="top">
-				
+				<div style="width:1250px;height:30px;margin:0px auto;">
+					<div id="user" style="width:100px;height:30px;float:right;display:flex;">
+						<a @click="login_()" href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;border-right:1px solid #c2c2d1;">登陆</div></a>
+						<a @click="regist_()" href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;">注册</div></a>
+					</div>
+				</div>
 			</div>
 			<div class="bottom">
 				<div class="container">
@@ -298,7 +305,7 @@
 <script type="text/javascript">
 	var width = $(document).width()
 	var height = $(document).height()
-	
+
 	new Vue({
       el: '#app',
       data: {
@@ -309,7 +316,9 @@
     	news:[{},{},{},{},{},{},{},{},{},{}] ,
     	total:100 ,
     	current:1 ,
-    	hot:[{},{},{},{},{},{},{},{},{},{}]
+    	hot:[{},{},{},{},{},{},{},{},{},{}] ,
+    	login:false ,
+    	nickname:""
       } ,
       created:function(){
       	var self = this 
@@ -357,19 +366,27 @@
 	          background: 'white'
 	        });
       		$.ajax({
-      		url:"/api/news/"+val+"/10" ,
-      		success:function(res){
-      			if(res.code == 200){
-      				self.current = val 
-      				self.news = res.data.list
-      				self.total = res.data.count 
-      			}
-      			loading.close();
-      		},
-      		fail:function(){
-      			loading.close();
-      		}
-      	})
+	      		url:"/api/news/"+val+"/10" ,
+	      		success:function(res){
+	      			if(res.code == 200){
+	      				self.current = val 
+	      				self.news = res.data.list
+	      				self.total = res.data.count 
+	      			}
+	      			loading.close();
+	      		},
+	      		fail:function(){
+	      			loading.close();
+	      		}
+	      	})
+      	} ,
+      	login_:function(){
+      		layer.open({
+      			type:2 ,
+				title:false ,
+				area:["350px" , "300px"] ,
+				content:"./login.html"
+			})
       	}
       }
     })
