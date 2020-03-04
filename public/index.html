@@ -180,9 +180,13 @@
 		<div id="theme_top">
 			<div class="top">
 				<div style="width:1250px;height:30px;margin:0px auto;">
-					<div id="user" style="width:100px;height:30px;float:right;display:flex;">
+					<div v-if="!login" id="user" style="width:100px;height:30px;float:right;display:flex;">
 						<a @click="login_()" href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;border-right:1px solid #c2c2d1;">登陆</div></a>
 						<a @click="regist_()" href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;">注册</div></a>
+					</div>
+					<div v-if="login" id="user" style="width:100px;height:30px;float:right;display:flex;">
+						<a href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;border-right:1px solid #c2c2d1;">{{nickname}}</div></a>
+						<a @click="out()" href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;">退出</div></a>
 					</div>
 				</div>
 			</div>
@@ -208,7 +212,7 @@
 					<div class="item selected">首页</div>
 					<div class="item">国创动漫</div>
 					<div class="item">日本动漫</div>
-					<div class="item">留言专区</div>
+					<a style="color:white;text-decoration:none;" href="msg.html"><div class="item">留言专区</div></a>
 				</div>
 			</div>
 			<div class="content">
@@ -306,7 +310,27 @@
 	var width = $(document).width()
 	var height = $(document).height()
 
-	new Vue({
+	//读取cookies
+	function getCookie(name)
+	{
+	    var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+	 
+	    if(arr=document.cookie.match(reg))
+	 
+	        return unescape(arr[2]);
+	    else
+	        return null;
+	}
+
+	function delCookie(name)
+	{
+		var exp = new Date();
+		exp.setTime (exp.getTime() - 1);
+		var cval = getCookie (name);
+		document.cookie = name + "=" + cval + "; expires="+ exp.toGMTString();
+	}
+
+	var app = new Vue({
       el: '#app',
       data: {
     	imgs: [
@@ -387,8 +411,23 @@
 				area:["350px" , "300px"] ,
 				content:"./login.html"
 			})
+      	} ,
+      	out:function(){
+      		var self = this
+      		layer.confirm("确认退出" , function(index){
+      			self.login = false 
+	      		self.nickname = ""
+      			layer.close(index)
+      			delCookie("username")
+	      		delCookie("nickname")
+      		})
       	}
       }
-    })
+    }) ;
+
+    if(getCookie("username")){
+		app.$data.login = true
+		app.$data.nickname = decodeURI(getCookie("nickname"))
+	}
 </script>
 </html>

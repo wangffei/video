@@ -22,7 +22,7 @@
 				<img src="./img/username.png" style="width:24px;height:24px;margin-top:13px;" />
 			</div>
 			<div style="flex-grow:1;height:50px;">
-				<input type="text" name="username" placeholder="请输入账号" style="width:90%;height:35px;margin-top:7.5px;outline-style: none ;border-radius:5px;border:1px solid #c4c4c4;text-align:center;" />
+				<input id="username" type="text" name="username" placeholder="请输入账号" style="width:90%;height:35px;margin-top:7.5px;outline-style: none ;border-radius:5px;border:1px solid #c4c4c4;" />
 			</div>
 		</div>
 		<div style="width:100%;height:50px;font-size:16px;text-align:center;line-height:50px;display:flex;margin-top:15px;">
@@ -30,12 +30,38 @@
 				<img src="./img/password.png" style="width:24px;height:24px;margin-top:13px;" />
 			</div>
 			<div style="flex-grow:1;height:50px;">
-				<input type="password" name="password" placeholder="请输入密码" style="width:90%;height:35px;margin-top:7.5px;outline-style: none ;border-radius:5px;border:1px solid #c4c4c4;text-align:center;" />
+				<input id="password" type="password" name="password" placeholder="请输入密码" style="width:90%;height:35px;margin-top:7.5px;outline-style: none ;border-radius:5px;border:1px solid #c4c4c4;" />
 			</div>
 		</div>
-		<div id="btn" style="width:100%;height:35px;font-size:13px;text-align:center;line-height:35px;margin-top:25px;color:white;">
+		<div id="btn" onclick="login_()" style="width:100%;height:35px;font-size:13px;text-align:center;line-height:35px;margin-top:25px;color:white;">
 			登陆
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+	var $ = parent.jQuery ;
+	function login_(){
+		var username = document.getElementById("username").value ;
+		var password = document.getElementById("password").value ;
+
+		if(username == undefined || password == undefined){
+			parent.layer.msg("账号或者密码不能为空")
+			return
+		}
+
+		$.ajax({
+			url:"/api/login" ,
+			data:{username:username , password:password} ,
+			success:function(res){
+				if(res.code == 200){
+					parent.app.$data.login = true
+					parent.app.$data.nickname = res.data.nickname
+					parent.layer.closeAll()
+				}else{
+					parent.layer.msg(res.msg)
+				}
+			}
+		})
+	}
+</script>
 </html>

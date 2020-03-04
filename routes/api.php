@@ -27,6 +27,7 @@ Route::get("/news/{page}/{limit}", "Api\IndexController@news");
 Route::get("/addNewsView", "Api\IndexController@addNewsView");
 Route::get("/test", "Api\IndexController@test");
 Route::get('/hot', "Api\IndexController@hot");
+Route::get('/login', "Api\IndexController@login");
 
 Route::get("/get_tags", "Api\ManagerController@get_tags1");
 Route::post("/upload_news", "Api\ManagerController@upload_news1");

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>动漫信息网</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="./js/vue.js"></script>
+	<script type="text/javascript" src="./js/jquery.js"></script>
+	<script type="text/javascript" src="./js/router.js"></script>
+	<!-- 引入样式 -->
+	<link rel="stylesheet" href="./css/elementui.min.css">
+	<!-- 引入组件库 -->
+	<script src="./js/elementui.min.js"></script>
+	<script src="./layui/lay/modules/layer.js"></script>
+	<link rel="stylesheet" href="./layui/css/modules/layer/default/layer.css">
+	<style type="text/css">
+		*{margin:0px;padding:0px;}
+		html,body{width:100%;height:100%;}
+		#app{
+			width:100%;height:auto;
+		}
+		/* 头部开始 */
+		#theme_top{
+			width:100%;
+			height:140px;
+		}
+		#theme_top .top{
+			width:100%;height:30px;background:white;position:absolute;top:0px;
+			filer:alpha(opacity=80);
+      		opacity:0.8;
+		}
+		#theme_top .bottom{
+			width:100%;height:140px;background:url('./img/new_bg.jpg') -115px;
+		}
+		#theme_top .bottom .container{
+			width:1250px;
+			height:100%;
+			margin:0px auto;
+			display:flex;
+		}
+		#theme_top .bottom .container .logo{
+			width:300px;
+			height:86px;
+			background:url('./img/logo.png') -57px;
+			margin-top:45px;
+		}
+		#theme_top .bottom .container .search{
+			width:650px;
+			height:50px;
+		}
+		#theme_top .bottom .container .search .search_el{
+			width:500px;height:50px;background:#8fbbe7;
+			margin:65px auto;display:flex;
+		}
+		#theme_top .bottom .container .search .search_el .search_panel{
+			width:440px;height:45px;margin:2.5px 0px 2.5px 2.5px;overflow:hidden;
+		}
+		#theme_top .bottom .container .search .search_el .search_btn{
+			width:60px;height:50px;cursor:pointer;color:white;line-height:50px;text-align:center;
+		}
+		#container{
+			width:100%;
+		}
+		#container .bar{
+			width:100%;height:50px;background:url('./img/nav_bg.png');border-bottom:4px solid #8fbbe7;
+		}
+		#container .bar .bar_content{
+			width:1250px;height:50px;margin:0px auto;display:flex;
+		}
+		#container .bar .bar_content .item{
+			width:110px;height:50px;font-size:18px;line-height:50px;text-align:center;cursor:pointer;color:white;margin-left:4px;
+		}
+		#container .bar .bar_content .selected{
+			background:#8fbbe7;color:blue;margin-left:0px;
+		}
+		#container .bar .bar_content .item:hover{
+			background:#8fbbe7;color:blue;
+		}
+		#container .content{
+			width:1250px;height:auto;overflow:hidden;margin:20px auto;border:1px solid #e3e3e3;
+		}
+		/* 头部结束 */
+		#container .content .msg_publish{
+			width:95%;
+			height:200px;
+			margin:0px auto;
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<div id="theme_top">
+			<div class="top">
+				<div style="width:1250px;height:30px;margin:0px auto;">
+					<div v-if="!login" id="user" style="width:100px;height:30px;float:right;display:flex;">
+						<a @click="login_()" href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;border-right:1px solid #c2c2d1;">登陆</div></a>
+						<a @click="regist_()" href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;">注册</div></a>
+					</div>
+					<div v-if="login" id="user" style="width:100px;height:30px;float:right;display:flex;">
+						<a href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;border-right:1px solid #c2c2d1;">{{nickname}}</div></a>
+						<a @click="out()" href="#"><div style="margin-top:5px;width:50px;height:20px;line-height:20px;text-align:center;font-size:12px;">退出</div></a>
+					</div>
+				</div>
+			</div>
+			<div class="bottom">
+				<div class="container">
+					<div class="logo"></div>
+					<div class="search">
+						<div class="search_el">
+							<div class="search_panel">
+								<input type="text" name="" style="width:100%;height:100%;font-size:16px;" placeholder="请输入关键字">
+							</div>
+							<div class="search_btn">
+								搜索
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="container">
+			<div class="bar">
+				<div class="bar_content">
+					<a style="color:white;text-decoration:none;" href="index.html"><div class="item">首页</div></a>
+					<div class="item">国创动漫</div>
+					<div class="item">日本动漫</div>
+					<a style="color:white;text-decoration:none;" href="msg.html"><div class="item selected">留言专区</div></a>
+				</div>
+			</div>
+			<div class="content" style="height:1000px;">
+				<div style="width:100%;height:50px;border-bottom:1px solid #e3e3e3;padding-left:10px;font-size:20px;color:gray;overflow:hidden;">
+					<div style="width:100%;height:20px;line-height:20px;margin-top:15px;border-left:3px solid #c2bbbb;padding-left:5px;">网友留言</div>
+				</div>
+				<div class="msg_publish">
+					<div style="border:1px solid #e3e3e3;height:100%;width:100%;margin-top:30px;display:flex;flex-direction:column;">
+						<div style="">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="width:100%;height:160px;background:#8fbbe7;text-align:center;overflow:hidden;">
+				<div style="color:#615f5f;font-size:12px;margin-top:50px;">
+					动漫信息网，为您提供优质的动漫资讯，为您提供快速流畅的动漫播放
+				</div>
+				<div style="color:#615f5f;font-size:12px;margin-top:50px;">
+					Copyright © 2005-2015 动漫信息网
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var width = $(document).width()
+	var height = $(document).height()
+
+	//读取cookies
+	function getCookie(name)
+	{
+	    var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+	 
+	    if(arr=document.cookie.match(reg))
+	 
+	        return unescape(arr[2]);
+	    else
+	        return null;
+	}
+
+	function delCookie(name)
+	{
+		var exp = new Date();
+		exp.setTime (exp.getTime() - 1);
+		var cval = getCookie (name);
+		document.cookie = name + "=" + cval + "; expires="+ exp.toGMTString();
+	}
+
+	var app = new Vue({
+      el: '#app',
+      data: {
+    	login:false ,
+    	nickname:""
+      } ,
+      created:function(){
+      	var self = this 
+      } ,
+      methods:{
+      	login_:function(){
+      		layer.open({
+      			type:2 ,
+				title:false ,
+				area:["350px" , "300px"] ,
+				content:"./login.html"
+			})
+      	} ,
+      	out:function(){
+      		var self = this
+      		layer.confirm("确认退出" , function(index){
+      			self.login = false 
+	      		self.nickname = ""
+      			layer.close(index)
+      			delCookie("username")
+	      		delCookie("nickname")
+      		})
+      	}
+      }
+    }) ;
+
+    if(getCookie("username")){
+		app.$data.login = true
+		app.$data.nickname = decodeURI(getCookie("nickname"))
+	}
+</script>
+</html>
