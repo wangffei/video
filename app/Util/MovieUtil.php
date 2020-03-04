@@ -83,7 +83,7 @@ class MovieUtil{
 		if ($res_int) {
         	$result = $matches[1] ;
         	$out = explode(":" , $result) ;
-        	$num = number_format($out[0])*60*60 + number_format($out[1])*60 + number_format($out[2]) ;
+        	$num = intval($out[0])*60*60 + intval($out[1])*60 + intval($out[2]) ;
         	return $num ;
 	    } else {
 	        return 0 ;

@@ -81,11 +81,17 @@
 			width:1250px;height:auto;overflow:hidden;margin:20px auto;border:1px solid #e3e3e3;
 		}
 		/* 头部结束 */
+
+		/* 留言区开始 */
 		#container .content .msg_publish{
 			width:95%;
 			height:200px;
 			margin:0px auto;
 		}
+		.btn:hover{
+			opacity:0.8;
+		}
+		/* 留言结束 */
 	</style>
 </head>
 <body>
@@ -128,14 +134,67 @@
 					<a style="color:white;text-decoration:none;" href="msg.html"><div class="item selected">留言专区</div></a>
 				</div>
 			</div>
-			<div class="content" style="height:1000px;">
+			<div class="content">
 				<div style="width:100%;height:50px;border-bottom:1px solid #e3e3e3;padding-left:10px;font-size:20px;color:gray;overflow:hidden;">
 					<div style="width:100%;height:20px;line-height:20px;margin-top:15px;border-left:3px solid #c2bbbb;padding-left:5px;">网友留言</div>
 				</div>
 				<div class="msg_publish">
 					<div style="border:1px solid #e3e3e3;height:100%;width:100%;margin-top:30px;display:flex;flex-direction:column;">
-						<div style="">
-							
+						<div style="width:100%;height:150px;border-bottom:1px solid #e3e3e3;overflow:hidden;">
+							<div style="width:98%;height:140px;margin:5px auto;">
+								<textarea v-model="txt" @keyup="count()" style="width:100%;height:100%;font-size:16px;outline-style:none;border:0px;resize:none;line-height:20px;"></textarea>
+							</div>
+						</div>
+						<div style="flex-grow:1;width:100%;">
+							<div style="width:98%;margin:0px auto;height:100%;">
+								<!-- <div style="width:32px;height:32px;margin:9px 0px;cursor:pointer;float:left;">
+									<img src="./img/img_icon.png" />
+								</div> -->
+								<div style="width:300px;height:50px;float:right;display:flex;">
+									<div style="width:200px;height:50px;font-size:12px;line-height:50px;color:#8b8d8b;text-align:right;">
+										您还可以输入<span style="color:red;">{{less}}</span>字
+									</div>
+									<div style="width:100px;height:50px;">
+										<div @click="submit()" class="btn" style="width:90px;height:35px;margin-top:7.5px;float:right;text-align:center;line-height:35px;background:#3591d5;color:white;font-size:13px;cursor:pointer;">发布</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div style="width:95%;height:130px;margin:20px auto;border:1px solid #e3e3e3;display:flex;">
+					<div @click="remove(index)" v-for="(item , index) in imgs" style="width:100px;height:100px;margin:15px 0px 15px 15px;line-height:100px;cursor:pointer;"><img :src="item.url" style="width:100%;height:100%;" />
+					</div>
+					<div @click="upload" style="width:100px;height:100px;margin:15px 0px 15px 15px;line-height:100px;text-align:center;font-size:25px;border:1px dotted #8f8786;color:#c6c6c6;cursor:pointer;">+</div>
+				</div>
+				<div style="width:95%;margin:20px auto;border-bottom:1px solid #e3e3e3;color:#bab3b3;height:40px;line-height:40px;font-size:18px;overflow:hidden;">
+					<div style="width:100%;height:20px;line-height:20px;margin-top:10px;border-left:3px solid #c2bbbb;padding-left:5px;">所有留言</div>
+				</div>
+				<div style="width:95%;margin:0px auto;">
+					<div v-for="item in msgs" style="width:100%;display:flex;padding:20px 0px;border-bottom:1px solid #e3e3e3;">
+						<div style="width:60px;">
+							<img class="icon" :src="item.user.icon" style="width:60px;height:60px;border:1px solid #e3e3e3;" />
+						</div>
+						<div style="flex-grow:1;">
+							<div style="width:100%;height:14px;line-height:14px;font-size:14px;color:#999;padding-left:12px;">{{item.user.nickname}}</div>
+							<div style="width:100%;margin-top:10px;">
+								<div style="width:1115.5px;margin-left:12px;color:#333333;font-size:14px;line-height:22px;">
+									{{item.data}}
+								</div>
+							</div>
+							<div v-if="item.imgs.length != 0" style="width:1115.5px;margin-left:12px;height:100px;display:flex;margin-top:10px;">
+								<div v-for="img in item.imgs" style="width:100px;height:100px;margin-right:20px;">
+									<img :src="img.img_url" style="width:100%;height:100%;border:1px solid #e3e3e3;" />
+								</div>
+							</div>
+							<div style="width:1115.5px;margin-left:12px;color:#999;height:18px;margin-top:30px;">
+								<div style="width:120px;height:100%;line-height:18px;font-size:12px;float:left;">
+									{{item.publish_time}}
+								</div>
+								<div style="width:120px;height:100%;line-height:18px;font-size:12px;float:right;">
+									
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -179,10 +238,22 @@
       el: '#app',
       data: {
     	login:false ,
-    	nickname:""
+    	nickname:"" ,
+    	txt:"" ,
+    	less:200 ,
+    	imgs:[] ,
+    	msgs:[]
       } ,
       created:function(){
       	var self = this 
+      	$.ajax({
+      		url:"/api/all_msg/1/10" ,
+      		success:function(res){
+      			if(res.code == 200){
+      				self.msgs = res.data
+      			}
+      		}
+      	})
       } ,
       methods:{
       	login_:function(){
@@ -201,6 +272,76 @@
       			layer.close(index)
       			delCookie("username")
 	      		delCookie("nickname")
+      		})
+      	} ,
+      	count:function(){
+      		if(this.txt.length > 200){
+      			layer.msg("您的输入已经达到上限")
+      			this.txt = this.txt.substring(0 , 200)
+      		}
+      		this.less = 200 - this.txt.length
+      	} ,
+      	upload:function(){
+      		if(this.imgs.length > 2){
+      			layer.msg("图片数量已经达到上限")
+      			return
+      		}
+      		var self = this
+      		var input = document.createElement("input") ;
+      		input.type = "file"
+      		var form = new FormData();
+      		//form.append("editormd-image-file")
+      		input.onchange = function(e){
+      			//form.submit()
+      			form.append("editormd-image-file" , e.path[0].files[0])
+      			$.ajax({
+      				url:"/api/uploadImage" ,
+      				type:'POST',
+      				data:form ,
+      				processData : false,
+					contentType : false,
+      				success:function(res){
+      					res = JSON.parse(res)
+      					if(res.success*1 == 1){
+      						var item = {url:res.url}
+      						self.imgs.push(item)
+      					}
+      				}
+      			})
+      		}
+      		input.click()
+      	} ,
+      	remove:function(index){
+      		var self = this
+      		layer.confirm("是否移除此图片" , function(i){
+      			layer.close(i)
+      			self.imgs.splice(index , 1)
+      		})
+      	} ,
+      	submit:function(){
+      		if(this.txt == ""){
+      			layer.msg("发布内容不能为空")
+      			return
+      		}
+      		if(!getCookie("username")){
+      			layer.msg("您还没有登陆，请点击右上角登陆按钮登陆")
+      			return
+      		}
+      		var data = {txt:this.txt , imgs:this.imgs}
+      		$.ajax({
+      			url:"/api/publish" ,
+      			type:"POST" ,
+      			data:data ,
+      			success:function(res){
+      				if(res.code == 200){
+      					layer.msg("成功")
+      				}else{
+      					layer.msg(res.msg)
+      				}
+      			} ,
+      			fail:function(){
+      				layer.msg("请检查网络连接")
+      			}
       		})
       	}
       }
