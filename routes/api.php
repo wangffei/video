@@ -30,6 +30,8 @@ Route::get('/hot', "Api\IndexController@hot");
 Route::get('/login', "Api\IndexController@login");
 Route::post('/publish', "Api\IndexController@msg");
 Route::get('/all_msg/{page}/{limit}', "Api\IndexController@all_msg");
+Route::get('/up/{type}/{id}', "Api\IndexController@up");
+Route::post('/reply', "Api\IndexController@reply");
 
 Route::get("/get_tags", "Api\ManagerController@get_tags1");
 Route::post("/upload_news", "Api\ManagerController@upload_news1");

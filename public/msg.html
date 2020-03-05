@@ -171,7 +171,7 @@
 					<div style="width:100%;height:20px;line-height:20px;margin-top:10px;border-left:3px solid #c2bbbb;padding-left:5px;">所有留言</div>
 				</div>
 				<div style="width:95%;margin:0px auto;">
-					<div v-for="item in msgs" style="width:100%;display:flex;padding:20px 0px;border-bottom:1px solid #e3e3e3;">
+					<div v-for="(item,index) in msgs" style="width:100%;display:flex;padding:20px 0px;border-bottom:1px solid #e3e3e3;">
 						<div style="width:60px;">
 							<img class="icon" :src="item.user.icon" style="width:60px;height:60px;border:1px solid #e3e3e3;" />
 						</div>
@@ -184,15 +184,27 @@
 							</div>
 							<div v-if="item.imgs.length != 0" style="width:1115.5px;margin-left:12px;height:100px;display:flex;margin-top:10px;">
 								<div v-for="img in item.imgs" style="width:100px;height:100px;margin-right:20px;">
-									<img :src="img.img_url" style="width:100%;height:100%;border:1px solid #e3e3e3;" />
+									<img :src="img.url" style="width:100%;height:100%;border:1px solid #e3e3e3;" />
 								</div>
 							</div>
-							<div style="width:1115.5px;margin-left:12px;color:#999;height:18px;margin-top:30px;">
+							<div style="width:1115.5px;margin-left:12px;color:#999;height:16px;margin-top:30px;">
 								<div style="width:120px;height:100%;line-height:18px;font-size:12px;float:left;">
 									{{item.publish_time}}
 								</div>
-								<div style="width:120px;height:100%;line-height:18px;font-size:12px;float:right;">
-									
+								<div style="width:120px;height:100%;line-height:16px;font-size:12px;float:right;display:flex;">
+									<div style="width:50px;height:100%;display:flex;">
+										<div><i @click="up($event , index)" :data="item.has_up ? 'yes' : 'no'" style="width:16px;height:16px;display:block;cursor:pointer;" :style="{background:item.has_up ? 'url(./img/up_.png)' : 'url(./img/up.png)'}"></i></div>
+										<div style="width:24px;height:16px;line-height:16px;font-size:12px;margin-left:10px;">{{item.up}}</div>
+									</div>
+									<div style="width:50px;height:100%;margin-left:20px;">
+										<div><i @click="reply(index)" style="width:16px;height:16px;background:url('./img/talk.png');display:block;cursor:pointer;"></i></div>
+									</div>
+								</div>
+							</div>
+							<div v-if="item.reply != undefined && item.reply.length != 0" style="margin-top:30px;border-top:1px solid #e3e3e3;width:1115.5px;margin-left:12px;color:#999;">
+								<div v-for="reply in item.reply" style="width:100%;line-height:20px;font-size:13px;display:flex;">
+									<div style="color:blue;cursor:pointer;">{{reply.user.nickname}}：</div>
+									<div style="margin-left:15px;">{{reply.data}}</div>
 								</div>
 							</div>
 						</div>
@@ -328,6 +340,7 @@
       			return
       		}
       		var data = {txt:this.txt , imgs:this.imgs}
+      		var self = this
       		$.ajax({
       			url:"/api/publish" ,
       			type:"POST" ,
@@ -335,6 +348,7 @@
       			success:function(res){
       				if(res.code == 200){
       					layer.msg("成功")
+      					self.msgs.unshift({id:res.data.id , data:self.txt , publisher:decodeURI(getCookie("username")) , publish_time:"刚刚" , up:0 , imgs:self.imgs , user:{nickname:decodeURI(getCookie("nickname")) , "icon":decodeURI(getCookie("icon"))} , has_up:false})
       				}else{
       					layer.msg(res.msg)
       				}
@@ -342,6 +356,38 @@
       			fail:function(){
       				layer.msg("请检查网络连接")
       			}
+      		})
+      	} ,
+      	up:function(e , index){
+      		var el = e.srcElement
+      		var self = this ;
+      		if(el.getAttribute("data") == "no"){
+      			$.ajax({
+      				url:"/api/up/up/"+self.msgs[index].id ,
+      				success:function(res){
+      					el.style.background = "url('./img/up_.png')" ;
+		      			el.setAttribute("data" , "yes") ;
+		      			self.msgs[index].up++ ;
+      				}
+      			})
+      		}else{
+      			$.ajax({
+      				url:"/api/up/no/"+self.msgs[index].id ,
+      				success:function(res){
+      					el.style.background = "url('./img/up.png')" ;
+		      			el.setAttribute("data" , "no") ;
+		      			self.msgs[index].up-- ;
+      				}
+      			})
+      		}
+      	} ,
+      	reply:function(index){
+      		var self = this
+      		layer.open({
+      			type:2 ,
+      			title:false ,
+      			area:["500px" , "210px"] ,
+      			content:"reply.html?id="+self.msgs[index].id 
       		})
       	}
       }
