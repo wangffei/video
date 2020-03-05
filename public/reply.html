@@ -37,6 +37,17 @@
        var r = window.location.search.substr(1).match(reg);
        if(r!=null)return  unescape(r[2]); return null;
     }
+    //读取cookies
+	function getCookie(name)
+	{
+	    var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+	 
+	    if(arr=document.cookie.match(reg))
+	 
+	        return unescape(arr[2]);
+	    else
+	        return null;
+	}
 
     var id = GetQueryString("id") ;
 
@@ -53,6 +64,10 @@
 
 	function publish(){
 		txt = document.getElementById("txt").value
+		if(txt == undefined || txt.trim() == ""){
+			layer.msg("回复不能为空")
+			return
+		}
 		parent.$.ajax({
 			url:"/api/reply" ,
 			data:{txt:txt , id:id} ,
@@ -60,6 +75,11 @@
 			success:function(res){
 				if(res.code == 200){
 					layer.msg("成功")
+					for(var i in parent.app.msgs){
+						if(parent.app.msgs[i].id == id){
+							parent.app.msgs[i].reply.push({id:res.data.id , data:txt , user:{nickname:decodeURI(getCookie("nickname")) , icon:decodeURI(getCookie("icon")) }})
+						}
+					}
 				}else{
 					layer.msg(res.msg)
 				}

@@ -149,7 +149,8 @@
  			}
  			$list[$i] -> reply = $reply ;
  		}
- 		$result = Array("code" => 200 , "msg" => "发布成功" , "data" => $list);
+ 		$count = DB::select("select count(*) as count from msg") ;
+ 		$result = Array("code" => 200 , "msg" => "发布成功" , "data" => Array("count" => $count[0] -> count , "list" => $list));
         return response(json_encode($result)) -> header("Content-Type", "application/json");
  	}
 
@@ -169,8 +170,9 @@
  		}
 
  		DB::insert("insert into msg_reply(data , msg_id , publisher) values('{$txt}' , $id , '{$username}')") ;
+ 		$id = DB::select("SELECT LAST_INSERT_ID() as id") ;
 
- 		$result = Array("code" => 200 , "msg" => "回复成功" , "data" => "");
+ 		$result = Array("code" => 200 , "msg" => "回复成功" , "data" => Array("id" => $id[0] -> id));
         return response(json_encode($result)) -> header("Content-Type", "application/json");
  	}
 

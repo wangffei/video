@@ -262,7 +262,7 @@
       		url:"/api/all_msg/1/10" ,
       		success:function(res){
       			if(res.code == 200){
-      				self.msgs = res.data
+      				self.msgs = res.data.list
       			}
       		}
       	})
