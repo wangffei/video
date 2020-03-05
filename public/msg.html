@@ -91,6 +91,9 @@
 		.btn:hover{
 			opacity:0.8;
 		}
+		.page{
+			width:400px;height:50px;margin:30px auto;
+		}
 		/* 留言结束 */
 	</style>
 </head>
@@ -203,13 +206,16 @@
 							</div>
 							<div v-if="item.reply != undefined && item.reply.length != 0" style="margin-top:30px;border-top:1px solid #e3e3e3;width:1115.5px;margin-left:12px;color:#999;">
 								<div v-for="reply in item.reply" style="width:100%;line-height:20px;font-size:13px;display:flex;">
-									<div style="color:blue;cursor:pointer;">{{reply.user.nickname}}：</div>
-									<div style="margin-left:15px;">{{reply.data}}</div>
+									<div style="color:blue;cursor:pointer;">{{reply.user.nickname.substring(0 , 4)}}：</div>
+									<div style="margin-left:15px;width:1035.5px;color:black;">{{reply.data}}</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+				<!-- <div v-if="total > 10" class="page">
+					<el-pagination background layout="prev, pager, next" :total="total" @current-change="page"></el-pagination>
+				</div> -->
 			</div>
 			<div style="width:100%;height:160px;background:#8fbbe7;text-align:center;overflow:hidden;">
 				<div style="color:#615f5f;font-size:12px;margin-top:50px;">
@@ -254,7 +260,8 @@
     	txt:"" ,
     	less:200 ,
     	imgs:[] ,
-    	msgs:[]
+    	msgs:[] ,
+    	//total:0 ,
       } ,
       created:function(){
       	var self = this 
@@ -263,6 +270,7 @@
       		success:function(res){
       			if(res.code == 200){
       				self.msgs = res.data.list
+      				//self.total = res.data.count
       			}
       		}
       	})
@@ -389,6 +397,9 @@
       			area:["500px" , "210px"] ,
       			content:"reply.html?id="+self.msgs[index].id 
       		})
+      	} ,
+      	page:function(){
+
       	}
       }
     }) ;

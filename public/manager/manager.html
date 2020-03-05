@@ -7,25 +7,25 @@
 	    	*{margin:0px;padding:0px;}
 	    	html,body{width:100%;height:100%;}
 	    	iframe{border:0px;}
+	    	#tobar{
+	    		transition: all 0.5s ;
+	    	}
 	    </style>
 	</head>
 
 	<body>
-		<div id="main" style="display: flex;flex-direction: column;width:100%;height:100%;overflow:hidden;">
-			<div style="">
-				<ul class="layui-nav layui-nav-tree layui-nav-side" lay-filter="">
-				  <li class="layui-nav-item" style="font-size: 24px">后台管理&nbsp;&nbsp;&nbsp;&nbsp;</li>
-				  <li class="layui-nav-item layui-this">
-				  	<a class="item_url" url="../editer/editer.html" href="#">资讯发布</a>
+		<div id="main" style="display: flex;width:100%;height:100%;overflow:hidden;">
+			<div data="yes" id="tobar" style="width:230px;height:100%;">
+				<ul class="layui-nav layui-nav-tree layui-nav-side" style="background:#131313;" lay-filter="">
+				  <li style="font-size: 24px;height:50px;line-height:50px;padding-left:20px;">后台管理&nbsp;&nbsp;&nbsp;&nbsp;</li>
+				  <li class="layui-nav-item layui-this" url="/editer/editer.html">
+				  	<a class="item_url" href="#../editer/editer.html">资讯发布</a>
 				  </li>
-				  <li class="layui-nav-item">
-				  	<a class="item_url" url="" href="#">资讯管理</a>
+				  <li class="layui-nav-item" url="news_manager.html">
+				  	<a class="item_url" href="#news_manager.html">资讯管理</a>
 				  </li>
-				  <li class="layui-nav-item">
-				  	<a class="item_url" url="" href="#">轮播图管理</a>
-				  </li>
-				  <li class="layui-nav-item">
-				  	<a class="item_url" url="" href="#">广告管理</a>
+				  <li class="layui-nav-item" url="cartoon.html">
+				  	<a class="item_url" href="#cartoon.html">轮播图管理</a>
 				  </li>
 				  <li class="layui-nav-item">
 				  	<a class="item_url" url="" href="#">动漫视频管理</a>
@@ -45,23 +45,46 @@
 				</script>
 			</div>
 			<div style="width: 100%;flex-grow: 1;">
+				<div style="width:100%;height:50px;background:#131313;display:flex;">
+					<div style="width:100px;height:50px;">
+						<div style="width:90px;height:32px;margin:9px auto;padding:0px 29px;">
+							<img id="all" src="/img/all.png" style="width:32px;height:32px;cursor:pointer;" />
+						</div>
+					</div>
+				</div>
 				<iframe src="../editer/editer.html" style="width: 100%; height: 100%;"></iframe>
 			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
 		var $ = layui.jquery ;
-		$(".item_url").click(function(){
-			if($(this).attr("url")){
-				$("iframe").attr("src" , $(this).attr("url"))
-			}
-		})
 
-		$(".layui-nav-item").click(function(){
+	    if(location.hash != undefined && location.hash != ""){
+	    	$("iframe").attr("src" , location.hash.replace("#" , ""))
+	    }
+
+	    $(".layui-nav-item").each(function(){
+			$(this).attr("class" , "layui-nav-item")
+		})
+	    $(".layui-nav-item[url='"+location.hash.replace("#" , "").replace(/\?.*/ , "")+"']").attr("class" , "layui-nav-item layui-this")
+
+		window.onhashchange = function(e){
+			$("iframe").attr("src" , location.hash.replace("#" , ""))
 			$(".layui-nav-item").each(function(){
 				$(this).attr("class" , "layui-nav-item")
 			})
-			$(this).attr("class" , "layui-nav-item layui-this")
+			console.log(location.hash.replace("#" , "").replace(/\?.*?/ , ""))
+		    $(".layui-nav-item[url='"+location.hash.replace("#" , "").replace(/\?.*/ , "")+"']").attr("class" , "layui-nav-item layui-this")
+		}
+
+		$("#all").click(function(){
+			if($("#tobar").attr("data") == "yes"){
+				$("#tobar").css("display" , "none")
+				$("#tobar").attr("data" , "no")
+			}else{
+				$("#tobar").css("display" , "block")
+				$("#tobar").attr("data" , "yes")
+			}
 		})
 	</script>
 </html>

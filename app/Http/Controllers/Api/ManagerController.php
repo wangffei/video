@@ -21,19 +21,28 @@ class ManagerController extends Controller{
 		$heading = $request -> input('heading') ;
 		$sub_heading = $request -> input('sub_heading') ;
 		$md = $request -> input('md') ;
+		$id = $request -> input('id') ;
 		//$html = $request -> input('html') ;
 		$cover = $request -> input('cover_file') ;
 		$tag = $request -> input('tag') ;
 		$md_url = null;
 		$html_url = null;
 		$release_time = Carbon::now() -> toDateTimeString();
+		$path = public_path() ;
+
+		$l = DB::select("select * from news where id=$id") ;
+		if(count($l) != 0){
+			unlink($path.$l[0]->md_url) ;
+			unlink($path.$l[0]->html_url) ;
+			DB::delete("delete from news where id = $id") ;
+		}
 
 		if(!is_null($md)){
 			$newfilename = time().".md" ;
 			$f = fopen("./uploads/md/".$newfilename , "w") ;
 			fwrite($f , $md) ;
 			fclose($f) ;
-			$md_url = "./uploads/md/".$newfilename;
+			$md_url = "/uploads/md/".$newfilename;
 		}
 
 		if(!is_null($md)){
@@ -44,7 +53,7 @@ class ManagerController extends Controller{
 			 taskList:true,
 			 tex: true,  flowChart:true, sequenceDiagram:true,});</script>") ;
 			fclose($f) ;
-			$html_url = "./uploads/html/".$newfilename;
+			$html_url = "/uploads/html/".$newfilename;
 		}
 
 		if($tag != null && $md_url != null && $html_url != null) {
@@ -83,8 +92,14 @@ class ManagerController extends Controller{
 		}
 
 		if($tag != null && $md_url != null && $html_url != null && $heading != null) {
-			$bool = DB::insert("insert into news(heading, sub_heading, release_time, md_url, html_url, page_view, cover, author, tag_id) values('$heading', '$sub_heading', '$release_time', '$md_url', '$html_url', 0, '$cover', '管理员', '$tag')");
-			$result = Array("code" => 200, "msg" => "成功", "count" => 1, "data" =>"");
+			$sql = "" ;
+			if(is_null($id)){
+				$sql = "insert into news(heading, sub_heading, release_time, md_url, html_url, page_view, cover, author, tag_id) values('$heading', '$sub_heading', '$release_time', '$md_url', '$html_url', 0, '$cover', '管理员', '$tag')" ;
+			}else{
+				$sql = "insert into news(id , heading, sub_heading, release_time, md_url, html_url, page_view, cover, author, tag_id) values($id , '$heading', '$sub_heading', '$release_time', '$md_url', '$html_url', 0, '$cover', '管理员', '$tag')" ;
+			}
+			$bool = DB::insert($sql);
+			$result = Array("code" => 200, "msg" => "成功", "count" => 1, "data" =>Array("md" => $md_url));
 			return response(json_encode($result)) -> header("Content-Type", "application/json");
 		}else {
 			$result = Array("code" => 500, "msg" => "失败", "count" => 1, "data" =>"");
@@ -167,5 +182,17 @@ class ManagerController extends Controller{
     		$result = Array("code" => 500, "msg" => "删除失败！", "count" => 1, "data" => "");
 			return response(json_encode($result)) -> header("Content-Type", "application/json");
     	}
+    }
+
+    public function all_news(){
+    	$list = DB::select("select * from news") ;
+    	$result = Array("code" => 200, "msg" => "成功" , "data" => $list);
+		return response(json_encode($result)) -> header("Content-Type", "application/json");
+    }
+
+    public function news_id($id){
+    	$list = DB::select("select * from news where id=$id") ;
+    	$result = Array("code" => 200, "msg" => "成功" , "data" => $list[0]);
+		return response(json_encode($result)) -> header("Content-Type", "application/json");
     }
 }

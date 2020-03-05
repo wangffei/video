@@ -2,7 +2,7 @@
 <html lang="zh">
     <head>
         <meta charset="utf-8" />
-        <title>Form get textarea value - Editor.md examples</title>
+        <title>资讯发布</title>
         <link rel="stylesheet" href="./css/style.css" />
         <link rel="stylesheet" href="./css/editormd.css" />
         <link rel="stylesheet" href="../layui/css/layui.css" media="all">
@@ -11,10 +11,10 @@
     <body>
         <div id="layout">
             <form method="post" action="/api/submitMd">
-                <div style="width:90%;margin: 10px auto;">
-                    <input type="button" name="submit" id="submit" value="提交表单 Submit" style="padding: 5px;" /> 
+                <div style="width:90%;margin: 10px auto;height:32px;">
+                    <input class="btn" type="button" name="submit" id="submit" value="发布" style="padding: 5px 20px;float:right;" /> 
                 </div>
-                <div id="test-editormd">
+                <div style="margin-top:10px;" id="test-editormd">
                     
 				<textarea id="blog_md" name="test-editormd-markdown-doc" value="" style="display: none;"></textarea>
                 </div>               
@@ -25,12 +25,30 @@
         <script src="../layui/layui.all.js"></script>   
         <script type="text/javascript">
             var testEditor = undefined 
-            $.get("./test.md", function(md) {
+            var result = undefined
+            var md_url = "./test.md"
+            var id = undefined
+
+            function GetQueryString(name)
+            {
+               var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+               var r = window.location.search.substr(1).match(reg);
+               if(r!=null)return  unescape(r[2]); return null;
+            }
+
+            id = GetQueryString("id")
+
+            if(GetQueryString("md")){
+                md_url = GetQueryString("md")
+            }
+
+            $.get(md_url, function(md) {
                 testEditor = editormd("test-editormd", {
                     width  : "90%",
                     height : 640,
                     path   : "./lib/",
                     appendMarkdown : md,
+                    emoji:true ,
                     saveHTMLToTextarea : true ,
 					imageUpload : true,
 					imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
@@ -109,8 +127,17 @@
     </body>
     <script>
         var $ = layui.jquery;
-
         var cover_file = undefined
+
+        $.ajax({
+            url:"/api/news_id/"+GetQueryString("id") ,
+            success:function(res){
+                if(res.code == 200){
+                    result = res.data
+                }
+            }
+        })
+
         layui.use('upload', function() {
             var upload = layui.upload;
             // 执行实例
@@ -145,7 +172,13 @@
                     ,title: false
                     ,area: ['36%', '380px']
                     ,content: $("#popUpdateTest").html()
-                    ,offset: '50px'
+                    ,offset: '50px' ,
+                    success:function(){
+                        $("select[name='tag']").val(result["tag_id"])
+                        $("input[name='heading']").val(result["heading"])
+                        $("input[name='sub_heading']").val(result["sub_heading"])
+                        var cover_file = result["cover"]
+                    }
                 });
                 form.render();
                 upload.render();
@@ -156,6 +189,9 @@
                 data.field["md"] = testEditor.getMarkdown();
                 //data.field["html"] = testEditor.getHTML();
                 data.field["cover_file"] = cover_file ;
+                if(id != undefined && id != ""){
+                    data.field["id"] = id
+                }
                 //console.log(data.field);
                 $.ajax({
                     type: "POST",
@@ -164,7 +200,11 @@
                     success:function(res){
                         if(res.code == 200){
                           layer.msg("成功")
-                          location.reload();
+                          if(id != undefined){
+                            parent.location.hash = "#/editer/editer.html?id="+id+"&md="+res.data.md
+                          }else{
+                            location.reload();
+                          }
                         }else{
                           layer.msg(res.msg)
                         }

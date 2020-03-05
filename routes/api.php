@@ -41,3 +41,5 @@ Route::post("/add_cartoon", "Api\ManagerController@add_cartoon1");
 Route::get("/delete_cartoon", "Api\ManagerController@delete_cartoon1");
 Route::get("/delete_cartoons", "Api\ManagerController@delete_cartoons1");
 Route::get("/update_cartoon", "Api\ManagerController@update_cartoon1");
+Route::get("/all_news", "Api\ManagerController@all_news");
+Route::get("/news_id/{id}", "Api\ManagerController@news_id");

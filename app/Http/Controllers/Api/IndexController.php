@@ -13,7 +13,7 @@
 
  	public function news($page , $limit){
  		$start = ($page - 1)*$limit ;
- 		$list = DB::select("select news.heading , news.sub_heading , news.release_time , news.html_url as url , news.page_view , news.cover , news.author , tags.tag_name  from news , tags where tags.id = news.tag_id limit $start , $limit") ;
+ 		$list = DB::select("select news.heading , news.sub_heading , news.release_time , news.html_url as url , news.page_view , news.cover , news.author , tags.tag_name  from news , tags where tags.id = news.tag_id order by news.id desc limit $start , $limit") ;
  		$count = DB::select("select count(*) as count from news")[0] -> count ;
  		$result = Array("code" => 200 , "msg" => "成功" , "data" => Array("list" => $list , "count"=> $count , "limit" => $limit ));
         return response(json_encode($result)) -> header("Content-Type", "application/json");
@@ -124,7 +124,8 @@
  	public function all_msg($page , $limit , Cookie $cookie){
  		$username = $cookie -> get("username") ;
  		$start = ($page - 1)*$limit ;
- 		$list = DB::select("select * from msg order by id desc limit $start , $limit") ;
+ 		// limit $start , $limit
+ 		$list = DB::select("select * from msg order by id desc") ;
  		for($i = 0 ; $i < count($list) ; $i++){
  			$item = DB::select("select id , img_url as url from msg_imgs where msg_id={$list[$i] -> id}") ;
  			$list[$i] -> imgs = $item ;
